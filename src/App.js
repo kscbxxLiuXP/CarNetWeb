@@ -1,7 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
+import React from "react";
 import 'antd/dist/antd.css'
-import {Button, Radio} from "antd";
 import {Switch, Route, Redirect} from "react-router-dom"
 import {homeRoutes} from "./routes";
 import MainContainer from "./components/MainContainer";
