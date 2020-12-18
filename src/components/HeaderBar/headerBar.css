@@ -1,0 +1,4 @@
+.headerbar{
+    display: flex;
+    justify-content: space-between;
+}

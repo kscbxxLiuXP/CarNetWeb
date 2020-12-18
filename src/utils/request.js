@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getToken } from './auth'
+import { getToken  } from './auth'
 
 //对axios进行封装
 //要求axios发送请求必须携带用户token
