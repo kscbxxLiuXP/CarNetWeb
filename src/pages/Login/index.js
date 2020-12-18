@@ -4,24 +4,25 @@ import { Form, Input, Button, Checkbox, Card, message } from 'antd';
 import "./login.css";
 import md5 from 'js-md5';
 import "../../utils/auth"
-import { setToken } from "../../utils/auth";
+import { setToken, isLogin } from "../../utils/auth";
 import moment from 'moment'
 class Login extends React.Component {
 
-    state = {
-        passwordClicked: false,
-    }
-
-    handlePasswordInputClick = () => {
-        if (!this.state.passwordClicked) {
-            this.setState({
-                passwordClicked: true,
-            })
+    componentDidMount() {
+        let type = this.props.location.search.substring(6)
+        if (type === '1') {
+            message.error("登录超时，请重新登录！");
+        } else if (type === '0') {
+            message.error('请先登录！');
         }
+        if (isLogin()) {
+            this.props.history.push('/home');
+        }
+
     }
 
 
-    //表单验证通过
+    //表单验证通过，开始登录
     onFinish = values => {
         //登录接口
         //与服务器进行通信验证账号密码
@@ -35,16 +36,15 @@ class Login extends React.Component {
         //服务器验证密码正确性
         let correct = password === 'admin' && username === 'admin';
         //返回token值
-        let token = username + moment().format("YYYYMMDDHHmmss"); //当前时间
+        let token = username + moment().add(1, 'minutes').format("**YYYY-MM-DD-HH-mm-ss"); //当前时间加1分钟是token失效的时间
         //模拟得到服务器验证结果
         if (correct) {
             setToken(token);
             this.props.history.push('/home')
+            message.success('登录成功！',1);
         } else {
-            message.error("密码错误！",2);
+            message.error("密码错误！", 2);
         }
-
-
     };
 
     render() {
@@ -72,10 +72,6 @@ class Login extends React.Component {
                     >
                         <Input.Password placeholder="密码" />
 
-                    </Form.Item>
-
-                    <Form.Item name="remember" valuePropName="checked">
-                        <Checkbox>记住我</Checkbox>
                     </Form.Item>
 
                     <Form.Item >

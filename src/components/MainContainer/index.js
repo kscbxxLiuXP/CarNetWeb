@@ -1,6 +1,7 @@
 import { Layout, Menu } from 'antd';
 import React from "react";
 import { withRouter, Link } from "react-router-dom";
+import { clearToken } from '../../utils/auth';
 
 import HeaderBar from '../HeaderBar';
 import SiderBar from '../SiderBar';
@@ -10,7 +11,9 @@ const { Header, Content, Sider } = Layout;
 
 class MainContainer extends React.Component {
 
-
+    componentDidMount(){
+    
+    }
 
     render() {
         return (

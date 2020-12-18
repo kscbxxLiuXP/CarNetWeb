@@ -23,7 +23,7 @@ ReactDOM.render(
                 })}
 
                 {/*如果找不到上面的路由，则重定向到404页面 */}
-                <Redirect to="/home" from="/" />
+                <Redirect to="/login" from="/" />
                 <Redirect to="/404" />
 
             </Switch>

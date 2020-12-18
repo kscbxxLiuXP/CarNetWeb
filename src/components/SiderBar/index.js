@@ -6,7 +6,7 @@ const routes = homeRoutes.filter(route => route.show);
 class SiderBar extends React.Component {
 
     componentDidMount(){
-
+     
     }
     render() {
         return (
