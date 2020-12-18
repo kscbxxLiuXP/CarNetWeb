@@ -4,7 +4,7 @@ class Car extends React.Component {
     render() {
         return (
             <div>
-                车辆
+                车辆12
             </div>
         );
     }
