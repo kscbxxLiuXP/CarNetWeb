@@ -11,6 +11,16 @@ export function getToken() {
     return localStorage.getItem(tokenName);
 }
 
+//获取token的用户名
+export function getUsername() {
+    let token = getToken();
+    if (!token)
+        return "未登录";
+
+
+    return token.split('%')[0];
+}
+
 //设置token
 export function setToken(token) {
     localStorage.setItem(tokenName, token);

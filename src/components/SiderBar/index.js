@@ -1,8 +1,9 @@
 import React from 'react';
 import { Menu } from "antd";
 import { withRouter } from "react-router-dom";
-import { homeRoutes } from "../../routes";
-const routes = homeRoutes.filter(route => route.show);
+import { siderMenu as routes } from "../../routes/sider";
+import SubMenu from 'antd/lib/menu/SubMenu';
+
 
 
 class SiderBar extends React.Component {
@@ -10,6 +11,7 @@ class SiderBar extends React.Component {
         super();
         this.state = {
             selectedkeys: [],
+            openkeys: [],
         }
     }
 
@@ -18,38 +20,83 @@ class SiderBar extends React.Component {
     renderKey = (key) => {
 
         this.setState({
-            selectedkeys: key,
+            selectedkeys: [key],
         });
     }
     componentDidMount() {
         let a = this.props.location.pathname;
+        console.log(a)
+
         this.renderKey(a);
+        //设置打开的菜单栏
+        let spli = a.split('/')
+        if (spli.length === 4) {
+            this.setState({
+                openkeys: ['/' + spli[1] + '/' + spli[2]]
+            })
+        } else {
+            this.setState({
+                openkeys: [],
+            })
+        }
+
+
+
+    }
+
+
+    handleMenuClick = p => {
+        //在push页面跳转之前检查一下，如果点击的还是本页面的话将不跳转
+        if (this.props.location.pathname !== p.key) {
+            this.props.history.push(p.key);
+        }
+    }
+    renderMenuItem(route) {
+        return <Menu.Item
+            key={route.path}
+            onClick={this.handleMenuClick}
+        >
+            {route.title}
+        </Menu.Item>
+    }
+    renderSubMenu(route) {
+        return (
+            <Menu.SubMenu key={route.path} title={route.title}>
+                {route.sub.map(r => {
+                    return this.renderMenuItem(r);
+                })}
+            </Menu.SubMenu>
+        );
+    }
+    onOpenChange = (openkeys) => {
+        if (openkeys.length === 0 || openkeys.length === 1) {
+            this.setState({
+                openkeys
+            })
+            return
+        }
+        const latestOpenKey = openkeys[openkeys.length - 1]
+        this.setState({
+            openkeys: [latestOpenKey]
+        })
+
     }
 
     render() {
         return (
             <Menu
+                onOpenChange={this.onOpenChange}
                 mode="inline"
                 onClick={({ key }) => this.renderKey(key)}
                 selectedKeys={this.state.selectedkeys}
+                openKeys={this.state.openkeys}
                 style={{ height: '100%', borderRight: 0 }}
             >
-                {routes.map(route => {
-                    return (
-                        <Menu.Item
-                            key={route.path}
-                            onClick={
-                                p => {
-                                    //在push页面跳转之前检查一下，如果点击的还是本页面的话将不跳转
-                                    if (this.props.location.pathname !== p.key) {
-                                        this.props.history.push(p.key);
-                                    }
-                                }
-                            }
-                        >
-                            {route.title}
-                        </Menu.Item>);
-                })}
+                {
+                    routes.map(route => {
+                        return route.sub ? this.renderSubMenu(route) : this.renderMenuItem(route);
+                    })
+                }
             </Menu>
         );
     }

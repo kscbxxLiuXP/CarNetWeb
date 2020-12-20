@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu, Dropdown } from 'antd';
 import './headerBar.css';
 import { withRouter } from "react-router-dom";
-import { clearToken } from "../../utils/auth"
+import { clearToken, getUsername } from "../../utils/auth"
 class HeaderBar extends React.Component {
     hanldeMenuClick = (e) => {
         console.log("click key:" + e.key)
@@ -29,7 +29,7 @@ class HeaderBar extends React.Component {
                     </div>
                 <Dropdown overlay={this.popMenu}>
                     <div >
-                        <span>超级管理员</span>
+                        <span>{getUsername()}</span>
                     </div>
                 </Dropdown>
             </div>

@@ -11,10 +11,10 @@ class Login extends React.Component {
     componentDidMount() {
         let type = this.props.location.search.substring(6)
         if (type === '1') {
-            message.error("会话超时，请重新登录！");
+            message.error("会话超时，请重新登录！", 2);
             this.props.history.replace('/login');
         } else if (type === '0') {
-            message.error('请先登录！');
+            message.error('请先登录！', 2);
             this.props.history.replace('/login');
         }
         if (isLogin()) {
@@ -38,11 +38,11 @@ class Login extends React.Component {
         //服务器验证密码正确性
         let correct = password === 'admin' && username === 'admin';
         //返回token值
-        let token = username + moment().add(10, 'minutes').format("**YYYY-MM-DD-HH-mm-ss"); //当前时间加10分钟是token失效的时间
+        let token = username + '%' + 'asasdadads%' + moment().add(30, 'minutes').format("**YYYY-MM-DD-HH-mm-ss"); //当前时间加30分钟是token失效的时间
         //模拟得到服务器验证结果
         if (correct) {
             setToken(token);
-            this.props.history.push('/home')
+            this.props.history.push('/home/dashboard')
             message.success('登录成功！', 1);
         } else {
             message.error("密码错误！", 2);

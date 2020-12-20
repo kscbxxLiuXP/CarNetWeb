@@ -1,13 +1,13 @@
 import React from "react";
 
-class Car extends React.Component {
+class ViewCar extends React.Component {
     render() {
         return (
             <div>
-                车辆管理
+
             </div>
-        );
+        )
     }
 }
 
-export default Car
+export default ViewCar;

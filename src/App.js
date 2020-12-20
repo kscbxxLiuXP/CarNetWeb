@@ -5,7 +5,7 @@ import { Switch, Route, Redirect } from "react-router-dom"
 import { homeRoutes } from "./routes";
 import MainContainer from "./components/MainContainer";
 import { isLogin, isTokenValid } from './utils/auth'
-function App() {
+function App(props) {
 
     return isLogin() ? (
 
@@ -29,8 +29,8 @@ function App() {
                                 }} />
                         );
                     })}
-                    <Redirect to="/home/dashboard" form="/home" />
-                    <Redirect to="/404" />
+                    <Redirect exact to ="/home/dashboard" from='/home'/>
+                    <Redirect to={"/404?from="+props.location.pathname}  />
                 </Switch>
             </MainContainer>
         ) : (<Redirect to="/login?type=1" />)//type=1因为登录超时
