@@ -3,9 +3,10 @@ import { Menu } from "antd";
 import { withRouter } from "react-router-dom";
 import { siderMenu as routes } from "../../routes/sider";
 import SubMenu from 'antd/lib/menu/SubMenu';
+import { MyIcon } from '../MyIcon';
 
 
-
+//显示侧边栏
 class SiderBar extends React.Component {
     constructor() {
         super();
@@ -39,11 +40,7 @@ class SiderBar extends React.Component {
                 openkeys: [],
             })
         }
-
-
-
     }
-
 
     handleMenuClick = p => {
         //在push页面跳转之前检查一下，如果点击的还是本页面的话将不跳转
@@ -54,20 +51,23 @@ class SiderBar extends React.Component {
     renderMenuItem(route) {
         return <Menu.Item
             key={route.path}
+            icon={<MyIcon type ={route.icon}/>}
             onClick={this.handleMenuClick}
         >
             {route.title}
         </Menu.Item>
     }
+    //渲染二级菜单
     renderSubMenu(route) {
         return (
-            <Menu.SubMenu key={route.path} title={route.title}>
+            <Menu.SubMenu icon={<MyIcon type ={route.icon}/>} key={route.path} title={route.title}>
                 {route.sub.map(r => {
                     return this.renderMenuItem(r);
                 })}
             </Menu.SubMenu>
         );
     }
+
     onOpenChange = (openkeys) => {
         if (openkeys.length === 0 || openkeys.length === 1) {
             this.setState({

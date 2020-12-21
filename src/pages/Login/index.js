@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Form, Input, Button, Checkbox, Card, message } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import "./login.css";
 import md5 from 'js-md5';
 import "../../utils/auth"
@@ -51,38 +52,69 @@ class Login extends React.Component {
 
     render() {
         return (
-            <Card title="登录" className="login-form">
-                <Form
-                    name="basic"
-                    autoComplete='off'
-                    initialValues={{ remember: true }}
-                    onFinish={this.onFinish}
-                >
-                    <Form.Item
-                        label="用户名"
-                        name="username"
-                        rules={[{ required: true, message: '请输入用户名!' }]}
+            <div className='LoginWrapper' style={{ minHeight: `${window.innerHeight - 1}px` }}>
+                <Card title="登录" className="login-form">
+                    <Form
+                        name="normal_login"
+                        onFinish={this.onFinish}
                     >
-                        <Input placeholder="用户名" autoComplete="off" />
-                    </Form.Item>
+                        <Form.Item
+                            name="username"
+                            rules={[{ required: true, message: '请输入用户名!' }]}
+                        >
+                            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="用户名" />
+                        </Form.Item>
+                        <Form.Item
+                            name="password"
+                            rules={[{ required: true, message: '请输入密码!' }]}
+                        >
+                            <Input.Password
+                                prefix={<LockOutlined className="site-form-item-icon" />}
+                                placeholder="密码"
+                            />
+                        </Form.Item>
 
-                    <Form.Item
-                        label="密码"
-                        name="password"
+                        <Form.Item>
+                            <Button style={{textAlign:"center"}} type="primary" htmlType="submit" className="login-form-button">
+                                登录
+                             </Button>
+                        </Form.Item>
+                    </Form>
+                    {/* <Form
+                        name="basic"
                         autoComplete='off'
-                        rules={[{ required: true, message: '请输入密码!' }]}
+                        initialValues={{ remember: true }}
+                        onFinish={this.onFinish}
                     >
-                        <Input.Password placeholder="密码" />
+                        <Form.Item
+                            label="用户名"
+                            name="username"
+                            rules={[{ required: true, message: '请输入用户名!' }]}
+                        >
+                            <Input placeholder="用户名" autoComplete="off" />
+                        </Form.Item>
 
-                    </Form.Item>
+                        <Form.Item
+                            label="密码"
+                            name="password"
+                            autoComplete='off'
+                            rules={[{ required: true, message: '请输入密码!' }]}
+                        >
+                            <Input.Password placeholder="密码" />
 
-                    <Form.Item >
-                        <Button type="primary" htmlType="submit">
-                            登录
+                        </Form.Item>
+
+                        <Form.Item >
+                            <Button type="primary" htmlType="submit">
+                                登录
                         </Button>
-                    </Form.Item>
-                </Form>
-            </Card>
+                        </Form.Item>
+                    </Form> */}
+                </Card>
+                <div className='loginFooter'>
+                    工业车联网 ©2020 Created by NEU
+                </div>
+            </div>
         );
     }
 }

@@ -6,6 +6,12 @@ import NewCar from "../pages/Car/NewCar";
 import ViewCar from "../pages/Car/ViewCar";
 import NewStaff from "../pages/Staff/NewStaff";
 import Staff from "../pages/Staff";
+import NewTask from "../pages/Task/NewTask";
+import ViewTask from "../pages/Task/ViewTask";
+import Task from "../pages/Task/index"
+import Settings from "../pages/Settings";
+import About from "../pages/About";
+import ViewStaff from "../pages/Staff/VieStaff";
 
 //这个文件用来存放所有的路由信息，其他地方将通过循环获取此处的路由信息
 //注册路由所绑定的组件信息
@@ -26,10 +32,10 @@ export const homeRoutes = [
     {
         path: '/home/dashboard',
         component: Dashboard,
-        exact:true,
+        exact: true,
     },
     {
-        path: '/home/car',
+        path: '/home/car/manage',
         component: Car,
         exact: true,
     },
@@ -39,11 +45,11 @@ export const homeRoutes = [
         exact: true,
     },
     {
-        path: '/home/car/view/:id',
+        path: '/home/car/manage/:id',
         component: ViewCar,
     },
     {
-        path: '/home/staff',
+        path: '/home/staff/manage',
         component: Staff,
         exact: true,
     },
@@ -52,4 +58,30 @@ export const homeRoutes = [
         component: NewStaff,
         exact: true,
     },
+    {
+        path: '/home/staff/manage/:id',
+        component: ViewStaff,
+        exact: true,
+    },
+    {
+        path: '/home/task/manage',
+        component: Task,
+        exact: true,
+    },
+    {
+        path: '/home/task/new',
+        component: NewTask,
+        exact: true,
+    },
+    {
+        path: '/home/task/manage/:id',
+        component: ViewTask,
+    },
+    {
+        path: '/home/settings',
+        component: Settings,
+    }, {
+        path: '/home/about',
+        component: About,
+    }
 ]
