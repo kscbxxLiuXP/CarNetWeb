@@ -1,5 +1,5 @@
 import { CheckOutlined, DownloadOutlined, RestOutlined, SmileOutlined, SyncOutlined } from '@ant-design/icons';
-import { Badge, Button, Card, Col, ConfigProvider, Descriptions, Form, Input, message, PageHeader, Popconfirm, Affix,Popover, Row, Select, Table, Tag, Upload } from 'antd';
+import { Badge, Button, Card, Col, ConfigProvider, Descriptions, Form, Input, message, PageHeader, Popconfirm, Affix, Popover, Row, Select, Table, Tag, Upload } from 'antd';
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { MyIcon } from "../../../components/MyIcon";
 import * as XLSX from 'xlsx';
@@ -472,7 +472,7 @@ class NewCar extends React.Component {
                         subTitle="车辆首次连入车联网"
                         extra={
                             <div >
-                                <div style={{ marginRight: 10, color: "gray",float:'left' }}>
+                                <div style={{ marginRight: 10, color: "gray", float: 'left' }}>
                                     提示：支持xlsx格式的表格
                                     </div>
                                 <Upload  {...this.uploadProps}>
@@ -493,85 +493,85 @@ class NewCar extends React.Component {
                 <div style={{ marginTop: 10, width: '100%' }}>
                     <Row gutter={20}>
                         <Col flex="300px">
-                        <Affix offsetTop={100} >
-                            <Card title="新建车辆" size="small" >
-                                <ConfigProvider renderEmpty={customizeRenderEmpty}>
-                                    <Form layout="vertical" size="small" ref={this.formRef} name="control-ref" onFinish={this.onFinish}>
-                                        <Form.Item
-                                            name="vehicleName"
-                                            label="车辆名称："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "请输入车辆名称！",
-                                                }, {
-                                                    validator: this.checkVehicleName,
-                                                }
-                                            ]}
-                                        >
-                                            <Input allowClear />
-                                        </Form.Item>
-                                        <Form.Item
-                                            name="vehicleIdentification"
-                                            label="车辆标识："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "请输入车辆标识！",
-                                                },
-                                                {
-                                                    validator: this.checkIdentification,
-                                                }
-                                            ]}
-                                        >
-                                            <Input allowClear />
-                                        </Form.Item>
-                                        <Form.Item
-                                            name="licensePlateNumber"
-                                            label="车牌号码："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "请输入车牌号码！",
-                                                },
-                                            ]}
-                                        >
-                                            <Input allowClear />
-                                        </Form.Item>
-                                        <Form.Item
-                                            name="vehicleAddress"
-                                            label="车辆地址："
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "请选择车辆地址！",
-                                                },
-                                            ]}
-                                        >
-
-                                            <Select
-                                                placeholder="车辆地址"
-                                                allowClear
+                            <Affix offsetTop={100} >
+                                <Card title="新建车辆" size="small" >
+                                    <ConfigProvider renderEmpty={customizeRenderEmpty}>
+                                        <Form layout="vertical" size="small" ref={this.formRef} name="control-ref" onFinish={this.onFinish}>
+                                            <Form.Item
+                                                name="vehicleName"
+                                                label="车辆名称："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: "请输入车辆名称！",
+                                                    }, {
+                                                        validator: this.checkVehicleName,
+                                                    }
+                                                ]}
                                             >
-                                                {this.addresses.map((adr, index) => {
-                                                    return <Option key={index} value={index}>{adr.label}</Option>
-                                                })}
-                                            </Select>
+                                                <Input allowClear />
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="vehicleIdentification"
+                                                label="车辆标识："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: "请输入车辆标识！",
+                                                    },
+                                                    {
+                                                        validator: this.checkIdentification,
+                                                    }
+                                                ]}
+                                            >
+                                                <Input allowClear />
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="licensePlateNumber"
+                                                label="车牌号码："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: "请输入车牌号码！",
+                                                    },
+                                                ]}
+                                            >
+                                                <Input allowClear />
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="vehicleAddress"
+                                                label="车辆地址："
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: "请选择车辆地址！",
+                                                    },
+                                                ]}
+                                            >
 
-                                        </Form.Item>
+                                                <Select
+                                                    placeholder="车辆地址"
+                                                    allowClear
+                                                >
+                                                    {this.addresses.map((adr, index) => {
+                                                        return <Option key={index} value={index}>{adr.label}</Option>
+                                                    })}
+                                                </Select>
 
-                                        <Form.Item >
-                                            <Button type="primary" icon={<CheckOutlined />} style={{ marginRight: 20 }} htmlType="submit">
-                                                提交
+                                            </Form.Item>
+
+                                            <Form.Item >
+                                                <Button type="primary" icon={<CheckOutlined />} style={{ marginRight: 20 }} htmlType="submit">
+                                                    提交
                                         </Button>
-                                            <Button htmlType="button" icon={<RestOutlined />} onClick={this.onReset}>
-                                                重置
+                                                <Button htmlType="button" icon={<RestOutlined />} onClick={this.onReset}>
+                                                    重置
                                         </Button>
-                                        </Form.Item>
-                                    </Form>
-                                </ConfigProvider >
-                            </Card>
-                        </Affix>
+                                            </Form.Item>
+                                        </Form>
+                                    </ConfigProvider >
+                                </Card>
+                            </Affix>
                         </Col>
                         <Col flex="auto">
                             <Card title={<div><MyIcon type="icon-chache" style={{ marginRight: 10 }} />待注册车辆信息</div>}>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu } from "antd";
 import { withRouter } from "react-router-dom";
 import { siderMenu as routes } from "../../routes/sider";
-import SubMenu from 'antd/lib/menu/SubMenu';
+
 import { MyIcon } from '../MyIcon';
 
 
@@ -41,7 +41,25 @@ class SiderBar extends React.Component {
             })
         }
     }
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+        let a = nextProps.location.pathname;
+        if (this.props.location.pathname !== a) {
 
+            this.renderKey(a);
+            //设置打开的菜单栏
+            let spli = a.split('/')
+            if (spli.length === 4) {
+                this.setState({
+                    openkeys: ['/' + spli[1] + '/' + spli[2]]
+                })
+            } else {
+                this.setState({
+                    openkeys: [],
+                })
+            }
+        }
+
+    }
     handleMenuClick = p => {
         //在push页面跳转之前检查一下，如果点击的还是本页面的话将不跳转
         if (this.props.location.pathname !== p.key) {
@@ -51,7 +69,7 @@ class SiderBar extends React.Component {
     renderMenuItem(route) {
         return <Menu.Item
             key={route.path}
-            icon={<MyIcon type ={route.icon}/>}
+            icon={<MyIcon type={route.icon} />}
             onClick={this.handleMenuClick}
         >
             {route.title}
@@ -60,7 +78,7 @@ class SiderBar extends React.Component {
     //渲染二级菜单
     renderSubMenu(route) {
         return (
-            <Menu.SubMenu icon={<MyIcon type ={route.icon}/>} key={route.path} title={route.title}>
+            <Menu.SubMenu icon={<MyIcon type={route.icon} />} key={route.path} title={route.title}>
                 {route.sub.map(r => {
                     return this.renderMenuItem(r);
                 })}
