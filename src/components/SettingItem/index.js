@@ -14,12 +14,16 @@ class SettingItem extends React.Component {
             ...other
         } = this.props;
         return (
-            <div className="setting-item">
+            <div className="setting-item" style={{ marginLeft: 80 }}>
+
                 <Space direction={nextLine ? "vertical" : "horizontal"} size={space ? space : 15}>
-                    <div style={{ fontWeight: 'bold' }}>
+                    <div >
                         {title}
                     </div>
+                    <Space direction="vertical">
                     {this.props.children}
+                    </Space>
+              
                 </Space>
             </div>
         )

@@ -115,7 +115,7 @@ class AccountSetting extends React.Component {
                         ]}
                         name="newpassword"
                         hasFeedback>
-                        <Input.Password onChange={(e) => this.setState({ firstpassword: e.target.value })} />
+                        <Input.Password onChange={(e) => { this.setState({ firstpassword: e.target.value }); this.formRef.current.validateFields(); }} />
                     </Form.Item>
                     <Form.Item label="确认密码"
                         rules={[
@@ -131,10 +131,13 @@ class AccountSetting extends React.Component {
                         name="confirm"
                         hasFeedback
                     >
-                        <Input.Password onChange={(e) => this.setState({ secondpassword: e.target.value })} />
+                        <Input.Password onChange={(e) => {
+                            this.setState({ secondpassword: e.target.value });
+                            this.formRef.current.validateFields();
+                        }} />
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" >
                             确定
                         </Button>
                     </Form.Item>

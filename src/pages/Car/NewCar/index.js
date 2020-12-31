@@ -169,7 +169,7 @@ class NewCar extends React.Component {
                 width: '5%',
                 render: (text, record) =>
                 (
-                    <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDelete(record.key)}>
+                    <Popconfirm title="确定要删除吗?" okText="确认" cancelText="取消" onConfirm={() => this.handleDelete(record.key)}>
                         <Button size="small" type="primary">删除</Button>
                     </Popconfirm>
                 ),

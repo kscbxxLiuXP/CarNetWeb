@@ -39,7 +39,7 @@ class Settings extends React.Component {
 
                 </PageHeader>
                 <div style={{ marginTop: 10 }}>
-                    <Layout className="site-layout-background" style={{ background: "white", minHeight: `${window.innerHeight - 0.4 * window.innerHeight}px` }}>
+                    <Layout className="site-layout-background" style={{ background: "white", minHeight: `${window.innerHeight - 0.3 * window.innerHeight}px` }}>
                         <Sider className="site-layout-background" style={{ background: "white" }} width={200}>
                             <Menu
                                 mode="inline"
