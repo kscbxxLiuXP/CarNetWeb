@@ -42,7 +42,7 @@ class ExcelImport extends React.Component {
         return (
 
             <Upload  {...this.uploadProps}>
-                <Button type="primary" icon={<DownloadOutlined />} >批量导入</Button>,
+                <Button type="primary" icon={<DownloadOutlined />} >批量导入</Button>
             </Upload>
 
         )

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageHeader, Upload, Button, Descriptions, Card, Collapse, Table, Affix, message, Spin } from 'antd'
+import { PageHeader, Upload, Button, Descriptions, Card, Collapse, Table, Affix, message, Spin, Modal,BackTop } from 'antd'
 import { DownloadOutlined, PlusCircleOutlined, SettingOutlined, LoadingOutlined, CheckCircleTwoTone } from '@ant-design/icons';
 import ExcelImport from '../../../components/ExcelImport';
 import NewStaffForm from './NewStaffForm';
@@ -42,79 +42,79 @@ class NewStaff extends React.Component {
             this.state = {
                 loading: false,
                 dataSource: [
-                    {
-                        id: 1001,
-                        name: "不知道1",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    },
-                    {
-                        id: 1002,
-                        name: "不知道2",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    },
-                    {
-                        id: 1003,
-                        name: "不知道3",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    },
-                    {
-                        id: 1004,
-                        name: "不知道4",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    },
-                    {
-                        id: 1005,
-                        name: "不知道5",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    },
-                    {
-                        id: 1001,
-                        name: "不知道1",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    },
-                    {
-                        id: 1002,
-                        name: "不知道2",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    },
-                    {
-                        id: 1003,
-                        name: "不知道3",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    },
-                    {
-                        id: 1004,
-                        name: "不知道4",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    },
-                    {
-                        id: 1005,
-                        name: "不知道5",
-                        idNumber: '321283200003127618',
-                        gender: '男',
-                        age: 18
-                    }
+                    // {
+                    //     id: 1001,
+                    //     name: "不知道1",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // },
+                    // {
+                    //     id: 1002,
+                    //     name: "不知道2",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // },
+                    // {
+                    //     id: 1003,
+                    //     name: "不知道3",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // },
+                    // {
+                    //     id: 1004,
+                    //     name: "不知道4",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // },
+                    // {
+                    //     id: 1005,
+                    //     name: "不知道5",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // },
+                    // {
+                    //     id: 1001,
+                    //     name: "不知道1",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // },
+                    // {
+                    //     id: 1002,
+                    //     name: "不知道2",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // },
+                    // {
+                    //     id: 1003,
+                    //     name: "不知道3",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // },
+                    // {
+                    //     id: 1004,
+                    //     name: "不知道4",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // },
+                    // {
+                    //     id: 1005,
+                    //     name: "不知道5",
+                    //     idNumber: '321283200003127618',
+                    //     gender: '男',
+                    //     age: 18
+                    // }
                 ],
                 verifyFinish: false,
-                step: 2,
+                step: 1,
             }
     }
     onStaffDelete = (record) => {
@@ -123,7 +123,7 @@ class NewStaff extends React.Component {
             dataSource: dataSource.filter((item) => item.key !== record.key),
         });
     }
-    //新建员工表单提交
+    //新建员工表单提交，员工添加到下方列表
     onFormFinish = (values) => {
         const { dataSource } = this.state;
         const newData = {
@@ -140,6 +140,7 @@ class NewStaff extends React.Component {
         message.success("添加成功！", 1.5);
     }
 
+    //所有员工列表提交
     onFormSubmit = () => {
         this.setState({ loading: true })
         setTimeout(() => {
@@ -149,6 +150,25 @@ class NewStaff extends React.Component {
             this.setState({ verifyFinish: true })
         }, 1000);
     }
+    handelExcelImport = values => {
+        let { dataSource } = this.state;
+        values.forEach((item, index) => {
+            const newData = {
+                key: item[1],
+                id: item[1],
+                name: item[2],
+                idNumber: item[3],
+                gender: item[4],
+                age: item[5],
+            };
+
+            dataSource = [...dataSource, newData];
+
+        });
+        this.setState({ dataSource: dataSource });
+        message.success("导入成功！");
+    }
+
     render() {
         return (
             <div>
@@ -163,7 +183,7 @@ class NewStaff extends React.Component {
                                     <div style={{ marginRight: 10, color: "gray", float: 'left' }}>
                                         提示：支持xlsx格式的表格
                         </div>
-                                    <ExcelImport callback={(values) => { console.log(values) }} />
+                                    <ExcelImport callback={this.handelExcelImport} />
                                 </div>
 
                             }
@@ -180,6 +200,7 @@ class NewStaff extends React.Component {
                                 </Card>
                             </Spin>
                         </div>
+                    
                         <Affix offsetBottom={20}>
                             <Card size="small" style={{ marginTop: 20 }} className="bottom-submit">
                                 <Button disabled={this.state.loading} style={{ float: "right" }} type="primary" onClick={this.onFormSubmit}>提交</Button>
@@ -189,8 +210,22 @@ class NewStaff extends React.Component {
                                 </div> : null}
                             </Card>
                         </Affix>
-                    </div> : <InfoComplete data={this.state.dataSource} />
+                    
+                    </div> : <InfoComplete data={this.state.dataSource} onFormSubmit={() => {
+                        this.setState({ step: 1, dataSource: [] });
+                        Modal.info({
+                            title: '信息',
+                            content: (
+                                <div>
+                                    <p>员工添加成功</p>
+                                    <p>初始密码为身份证号后6位</p>
+                                </div>
+                            ),
+                            onOk() { },
+                        });
+                    }} />
                 }
+                    <BackTop visibilityHeight={50} style={{ right: 100,bottom:10 }} />
             </div>
 
         )

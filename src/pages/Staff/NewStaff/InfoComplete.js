@@ -1,12 +1,24 @@
 import React from 'react'
-import { PageHeader, Button, Card, Affix, Menu, Row, Col, Descriptions, Badge } from 'antd'
+import { PageHeader, Button, Card, Affix, Menu, Row, Col, Descriptions, Badge, Space } from 'antd'
 import AvatarUpload from '../../../components/AvatarUpload'
 class InfoComplete extends React.Component {
 
-    handleMenuClick = e => {
-        console.log(e)
+    constructor(props) {
+        super(props)
+        this.state = {
+            currentPerson: this.props.data[0]
+        }
     }
 
+
+    //左侧菜单栏点击后，显示员工的信息
+    handleMenuClick = e => {
+        this.setState({ currentPerson: e.item.props.data })
+    }
+
+    onFormSubmit = ()=>{
+        this.props.onFormSubmit()
+    }
     render() {
         return (
             <div>
@@ -19,7 +31,7 @@ class InfoComplete extends React.Component {
 
                 <Card style={{ marginTop: 20 }}>
                     <Row>
-                        <Col flex="130px">
+                        <Col flex="200px">
                             <h1>
                                 共 {this.props.data.length} 人
                             </h1>
@@ -35,9 +47,10 @@ class InfoComplete extends React.Component {
                                 >
                                     {this.props.data.map((data, index) => {
                                         return <Menu.Item key={index + 1}
-
+                                           data={data}
+                                           icon={  <Badge count={index+1} style={{background:"#fff",color:"#999",boxShadow:"0 0 0 1px #d9d9d9 inset"}}/>}
                                         >
-                                            {data.name}
+                                           {data.name}
                                         </Menu.Item>
                                     })}
 
@@ -45,27 +58,22 @@ class InfoComplete extends React.Component {
                             </div>
 
                         </Col>
-                        <Col flex="4">
+                        <Col flex="auto">
                             <div style={{ margin: 30 }}>
-                                <Descriptions title="User Info" bordered column={2} size="small">
-                                    <Descriptions.Item label="Product">Cloud Database</Descriptions.Item>
-                                    <Descriptions.Item label="Billing Mode">Prepaid</Descriptions.Item>
-                                    <Descriptions.Item label="Automatic Renewal">YES</Descriptions.Item>
-                                    <Descriptions.Item label="Order time">2018-04-24 18:00:00</Descriptions.Item>
-                                    <Descriptions.Item label="Usage Time" span={2}>
-                                        2019-04-24 18:00:00
-                                </Descriptions.Item>
-
-                                    <Descriptions.Item label="Negotiated Amount">$80.00</Descriptions.Item>
-                                    <Descriptions.Item label="Discount">$20.00</Descriptions.Item>
-                                    <Descriptions.Item label="Official Receipts">$60.00</Descriptions.Item>
+                                <Descriptions title="员工信息" bordered column={2} size="small">
+                                    <Descriptions.Item label="工号">{this.state.currentPerson.id}</Descriptions.Item>
+                                    <Descriptions.Item label="姓名">{this.state.currentPerson.name}</Descriptions.Item>
+                                    <Descriptions.Item label="性别">{this.state.currentPerson.gender}</Descriptions.Item>
+                                    <Descriptions.Item label="年龄">{this.state.currentPerson.age}</Descriptions.Item>
+                                    <Descriptions.Item label="身份证号" span={2}>{this.state.currentPerson.idNumber}</Descriptions.Item>
+                                    <Descriptions.Item label="正面照上传" span={2}>
+                                        <AvatarUpload id={this.state.currentPerson.id} />
+                                        <div style={{ color: "red" }}>*此图片将作为人脸识别的图片</div>
+                                    </Descriptions.Item>
 
                                 </Descriptions>
                             </div>
 
-                        </Col>
-                        <Col flex="auto">
-                            <AvatarUpload />
                         </Col>
                     </Row>
 

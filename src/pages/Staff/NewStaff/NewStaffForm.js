@@ -54,7 +54,6 @@ class NewStaffForm extends React.Component {
 
     };
 
-
     render() {
         return (
             <div>
