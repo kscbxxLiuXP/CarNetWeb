@@ -1,10 +1,11 @@
 import React from "react";
-import { List, Card, PageHeader, Spin, Divider, Select, Input } from 'antd'
+import { List, Card, PageHeader, Spin, Divider, Select, Input, BackTop } from 'antd'
 import TagFilter from "../../components/Filter/TagFilter";
+import { MyIcon } from '../../components/MyIcon/index'
+import VehicleCard from "../../components/VehicleCard";
 
 
-
-
+const {Option} =Select
 class Car extends React.Component {
 
     constructor(props) {
@@ -35,16 +36,46 @@ class Car extends React.Component {
 
     data = [
         {
-            title: 'Title 1',
+            id: '123001',
+            name: '车辆1',
+            sign: '苏A 54KLS',
+            address: "辽宁沈阳浑南",
+            state: 1,
         },
         {
-            title: 'Title 2',
+            id: '123002',
+            name: '车辆2',
+            sign: '苏A 65ECC',
+            address: "辽宁沈阳浑南",
+            state: 1,
         },
         {
-            title: 'Title 3',
+            id: '123003',
+            name: '车辆3',
+            sign: '辽A 3DMAX',
+            address: "辽宁沈阳浑南",
+            state: 2,
         },
         {
-            title: 'Title 4',
+            id: '123004',
+            name: '车辆4',
+            sign: '辽A IDEA1',
+            address: "辽宁沈阳浑南",
+            state: 1,
+        },
+        {
+            id: '123005',
+            name: '车辆5',
+            sign: '辽A IDEA1',
+            address: "辽宁沈阳浑南",
+            state: 2,
+        },
+        {
+            id: '123006',
+            name: '车辆6',
+            sign: '辽A IDEA1',
+            address: "辽宁沈阳浑南",
+            state: 1,
         },
     ];
 
@@ -60,7 +91,7 @@ class Car extends React.Component {
     handleVechileSearch = value => {
         this.setState({ spinning: true })
         setTimeout(() => { this.setState({ spinning: false }) }, 300)
-        if(value==="")
+        if (value === "")
             console.log("empty input")
         else
             console.log(value)
@@ -106,21 +137,21 @@ class Car extends React.Component {
                     </Card>
 
                 </div>
-                <Divider dashed />
+                <Divider dashed orientation="left"> 共 {2} 辆</Divider>
                 <div>
                     <Spin spinning={this.state.spinning}>
                         <List
-                            grid={{ gutter: 16, column: 4 }}
+                            grid={{ gutter: 16, column: 5 }}
                             dataSource={this.data}
                             renderItem={item => (
-                                <List.Item onClick={() => { console.log("Item " + item.title + " Clicked") }}>
-                                    <Card hoverable title={item.title}>Card content</Card>
+                                <List.Item onClick={() => {this.props.history.push("/home/car/manage/"+item.id)}}>
+                                    <VehicleCard item={item}></VehicleCard>
                                 </List.Item>
                             )}
                         />
                     </Spin>
                 </div>
-
+                <BackTop visibilityHeight={100} style={{ right: 50 }} />
             </div>
         );
     }

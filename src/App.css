@@ -33,3 +33,7 @@
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
     background-color: #c8c8c8;
   }
+  /* 更改antd中dropdown 菜单中的hover效果 */
+  .ant-dropdown-menu-item-active:not(.ant-dropdown-menu-item-disabled),.ant-dropdown-menu-item:hover:not(.ant-dropdown-menu-item-disabled){
+    background-color:#E5F2FF;
+  }

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button, Form, Input, message, } from "antd";
+import { Button, Form, Input, message,Divider, } from "antd";
 import md5 from 'js-md5'
 import { getUsername } from '../../../utils/auth';
 const formItemLayout = {
@@ -90,6 +90,7 @@ class AccountSetting extends React.Component {
     render() {
         return (
             <div>
+                       <Divider orientation="left" style={{ fontWeight: 'bold' }}>修改密码</Divider>
                 <Form {...formItemLayout} className='changepassword' ref={this.formRef} onFinish={this.handleSubmit}>
                     <Form.Item label="原密码" hasFeedback
                         name="oldpassword"

@@ -19,25 +19,37 @@ class SiderBar extends React.Component {
 
     //处理路径，显示在左侧导航栏
     renderKey = (key) => {
+        let spli = key.split('/')
+        if (spli.length === 4) {
+            this.setState({
+                selectedkeys: ['/' + spli[1] + '/' + spli[2] + '/' + spli[3]]
+            })
+        } else if (spli.length === 5) {
+            this.setState({
+                selectedkeys: ['/' + spli[1] + '/' + spli[2] + '/' + spli[3]]
+            })
+        } else {
+            this.setState({
+                selectedkeys: ['/' + spli[1] + '/' + spli[2]]
+            })
+        }
 
-        this.setState({
-            selectedkeys: [key],
-        });
     }
     componentDidMount() {
         let a = this.props.location.pathname;
-        console.log(a)
+
 
         this.renderKey(a);
         //设置打开的菜单栏
         let spli = a.split('/')
+        console.log(spli)
         if (spli.length === 4) {
             this.setState({
                 openkeys: ['/' + spli[1] + '/' + spli[2]]
             })
         } else {
             this.setState({
-                openkeys: [],
+                openkeys: ['/' + spli[1] + '/' + spli[2]]
             })
         }
     }
@@ -54,7 +66,7 @@ class SiderBar extends React.Component {
                 })
             } else {
                 this.setState({
-                    openkeys: [],
+                    openkeys: ['/' + spli[1] + '/' + spli[2]]
                 })
             }
         }
