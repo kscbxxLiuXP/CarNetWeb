@@ -17,7 +17,7 @@ class MainContainer extends React.Component {
 
     render() {
         return (
-            <Layout style={{minHeight:`${window.innerHeight-1}px`}}>
+            <Layout style={{ minHeight: `${window.innerHeight - 1}px` }}>
                 <Header className="header"
                     style={{
                         backgroundColor: "#4f9ec7",
@@ -27,7 +27,7 @@ class MainContainer extends React.Component {
                     }}>
                     <HeaderBar />
                 </Header>
-                <Layout style={{ paddingLeft:30,paddingRight:10, marginTop: 64 }}>
+                <Layout style={{ paddingLeft: 30, paddingRight: 10, marginTop: 64 }}>
                     <Sider style={{
                         overflow: 'auto',
                         height: '200vh',
@@ -35,7 +35,7 @@ class MainContainer extends React.Component {
                     }} width={200} className="site-layout-background">
                         <SiderBar />
                     </Sider>
-                    <Layout style={{ marginLeft:200, padding: '16px' }}>
+                    <Layout style={{ marginLeft: 200, padding: '16px' }}>
                         {/* <Breadcrumb style={{ margin: '16px 0' }}>
                             <Breadcrumb.Item>Home</Breadcrumb.Item>
                             <Breadcrumb.Item>List</Breadcrumb.Item>
@@ -44,7 +44,7 @@ class MainContainer extends React.Component {
                         <Content
                             className="site-layout-background"
                             style={{
-                               
+
                                 margin: 0,
                                 minHeight: 280,
                             }}

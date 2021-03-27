@@ -1,9 +1,10 @@
 import React from "react";
-import { Image, Card, Row, Col, Badge } from 'antd'
+import { Image, Card, Row, Col, Badge, DatePicker, TimePicker, Spin, Descriptions, Divider, Button } from 'antd'
 import { MyIcon } from '../../components/MyIcon/index'
 import './dash.css'
 import { Liquid } from '@ant-design/charts';
-
+import { get, post, del, put } from '../../utils/request';
+import moment from 'moment'
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -19,6 +20,7 @@ class Dashboard extends React.Component {
             },
         };
         this.state = {
+            loading: true,
             tasks: [
                 { title: "任务1", id: 1001, description: "这是描述", time: "6天前" },
                 { title: "任务2", id: 1002, description: "这是描述", time: "6天前" },
@@ -39,8 +41,18 @@ class Dashboard extends React.Component {
             ]
         }
     }
-   
 
+    componentDidMount() {
+        get('/log/all').then(
+            res => {
+                console.log(res.data.log);
+                this.setState({
+                    logs: res.data.log,
+                    loading: false,
+                })
+            }
+        )
+    }
     render() {
         return (
             <div >
@@ -109,10 +121,30 @@ class Dashboard extends React.Component {
                     </Col>
                     <Col span={8}>
                         <Card title="车辆利用率" >
-                            <Liquid {...this.config} style={{height:250}}/>
+                            <Liquid {...this.config} style={{ height: 250 }} />
                         </Card>
                     </Col>
                 </Row>
+                <br />
+                <Card>
+                    <Spin spinning={this.state.loading}>
+                        {this.state.loading ? null : this.state.logs.map((item, index) => {
+                            return <div key={index}>
+                                <Descriptions bordered column={1}>
+                                    <Descriptions.Item label="id">{item.id}</Descriptions.Item>
+                                    <Descriptions.Item label="vehicleID">{item.vehicleID}</Descriptions.Item>
+                                    <Descriptions.Item label="staffID">{item.staffID}</Descriptions.Item>
+                                    <Descriptions.Item label="time">{item.time}</Descriptions.Item>
+                                </Descriptions>
+                                <DatePicker format="YYYY-MM-DD HH:mm:ss" value={moment(item.time)} showTime />
+                                <Button></Button>
+                                <Divider></Divider>
+                            </div>
+                        })}
+
+                    </Spin>
+
+                </Card>
             </div>
         );
     }

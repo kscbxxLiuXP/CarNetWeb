@@ -7,6 +7,8 @@ import CurrentJob from "./CurrentJob";
 import PreviousJob from "./PreviousJob";
 import CarPermission from "./CarPermission";
 import OperationLog from "./OperationLog";
+
+import Map from "../../../components/Map";
 const { confirm } = Modal;
 const { TabPane } = Tabs;
 //用于表示message的key
@@ -38,7 +40,7 @@ class ViewCar extends React.Component {
             sign: '苏A 54KLS',
             address: "辽宁沈阳浑南",
             state: 1,
-            
+
         }
 
     }
@@ -143,6 +145,8 @@ class ViewCar extends React.Component {
                 <br />
 
                 {this.state.tabKey === '1' ? <>
+                    <Map />
+                    <br />
                     <Card title="车辆数据监控" >
                         <DataInspect></DataInspect>
                     </Card>

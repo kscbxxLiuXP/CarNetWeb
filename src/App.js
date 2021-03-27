@@ -29,8 +29,8 @@ function App(props) {
                                 }} />
                         );
                     })}
-                    <Redirect exact to ="/home/dashboard" from='/home'/>
-                    <Redirect to={"/404?from="+props.location.pathname}  />
+                    <Redirect exact to="/home/dashboard" from='/home' />
+                    <Redirect to={"/404?from=" + props.location.pathname} />
                 </Switch>
             </MainContainer>
         ) : (<Redirect to="/login?type=1" />)//type=1因为登录超时
