@@ -28,8 +28,14 @@ class NewStaffForm extends React.Component {
             id: nid,
         })
     }
+    componentWillReceiveProps(next){
+        this.formRef.current.setFieldsValue({
+            id: next.nid,
+        })
+    }
     getNextID() {
-        return 1001;
+        // console.log(this.props.nid)
+        return this.props.nid;
     }
     //提交
     onFinish = (values) => {

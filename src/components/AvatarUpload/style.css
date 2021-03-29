@@ -1,0 +1,13 @@
+.avatar-upload-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: 220px;
+    padding: 20px;
+    border-style: dashed;
+    border-radius: 10px;
+    border-width: 2px;
+    background-color: #fafafa;
+}

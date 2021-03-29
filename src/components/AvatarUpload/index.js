@@ -1,67 +1,70 @@
-import React from 'react'
-import { Upload, message } from 'antd';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
+import { Button, Image, message } from 'antd'
+import axios from 'axios'
+import React, { useState } from 'react'
+import { useFileUpload } from 'use-file-upload'
+import { api_staff_upload_photo } from '../../utils/apis/api'
+import { formatFileSize } from '../../utils/utils'
+import { UploadOutlined } from "@ant-design/icons"
+import './style.css'
+const AvatarUpload = (props) => {
+  const [file, selectFile] = useFileUpload()
+  const [loading, setLoading] = useState(false);
+  return (
+    <div className="avatar-upload-wrapper">
+      {file ? (
+        <div>
+          <Image src={file.source} width={200} />
 
-function beforeUpload(file) {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('你只能上传 JPG/PNG 文件!');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error('图片大小必须小于 2MB!');
-  }
-  return isJpgOrPng && isLt2M;
-}
-
-class AvatarUpload extends React.Component {
-  state = {
-    loading: false,
-  };
-
-  handleChange = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          imageUrl,
-          loading: false,
-        }),
-      );
-    }
-  };
-
-  render() {
-    const { loading, imageUrl } = this.state;
-    const uploadButton = (
-      <div>
-        {loading ? <LoadingOutlined /> : <PlusOutlined />}
-        <div style={{ marginTop: 8 }}>上传</div>
+        </div>
+      ) : (
+        <Image
+          width={200}
+          height={200}
+          src='assets/img/noavatar.png'
+        />
+      )}
+      <br />
+      {file ? (<div>
+        <span> 文件大小: {formatFileSize(file.size)} </span>
       </div>
-    );
-    return (
-      <Upload
-        name="avatar"
-        listType="picture-card"
-        className="avatar-uploader"
-        showUploadList={false}
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        beforeUpload={beforeUpload}
-        onChange={this.handleChange}
+      ) : null}
+      <Button
+        style={{ width: 120 }}
+        icon={<UploadOutlined />}
+        onClick={() => {
+          // Single File Upload
+          selectFile({ accept: 'image/*' }, ({ source, name, size, file }) => {
+            // file - is the raw File Object
+            console.log({ source, name, size, file })
+            // Todo: Upload to cloud.
+          })
+        }}
+        disabled={loading}
       >
-        {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-      </Upload>
-    );
-  }
+        选择文件
+      </Button>
+      <Button
+        style={{ width: 120, marginTop: 10 }}
+        loading={loading} disabled={!file} onClick={() => {
+          //将文件上传至服务器
+          setLoading(true)
+          console.log(props.id);
+          let param = new FormData();
+          param.append('file', file.file)
+          param.append('id', props.id)
+          let config = {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          }
+          axios.post(api_staff_upload_photo, param, config).then(res => {
+            console.log(res);
+            setLoading(false)
+            message.success("上传成功！")
+          })
+        }}>上传</Button>
+
+    </div>
+  )
 }
+
 export default AvatarUpload

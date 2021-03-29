@@ -1,12 +1,14 @@
 import React from 'react'
 import { PageHeader, Button, Card, Affix, Menu, Row, Col, Descriptions, Badge, Space } from 'antd'
 import AvatarUpload from '../../../components/AvatarUpload'
+import './infoComplete.css'
 class InfoComplete extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            currentPerson: this.props.data[0]
+            currentPerson: this.props.data[0],
+            selectIndex: 0,
         }
     }
 
@@ -16,7 +18,7 @@ class InfoComplete extends React.Component {
         this.setState({ currentPerson: e.item.props.data })
     }
 
-    onFormSubmit = ()=>{
+    onFormSubmit = () => {
         this.props.onFormSubmit()
     }
     render() {
@@ -36,25 +38,20 @@ class InfoComplete extends React.Component {
                                 共 {this.props.data.length} 人
                             </h1>
 
-                            <div
-                                style={{ overflowY: "scroll", height: 350, }}
+                            <div className="infocomplete-list"
+                                style={{ overflowY: "auto", height: "550px", }}
                             >
-                                <Menu
-                                    onClick={this.handleMenuClick}
-                                    defaultSelectedKeys={['1']}
-                                    mode="inline"
-                                    style={{ overflowX: "hidden" }}
-                                >
-                                    {this.props.data.map((data, index) => {
-                                        return <Menu.Item key={index + 1}
-                                           data={data}
-                                           icon={  <Badge count={index+1} style={{background:"#fff",color:"#999",boxShadow:"0 0 0 1px #d9d9d9 inset"}}/>}
-                                        >
-                                           {data.name}
-                                        </Menu.Item>
-                                    })}
+                                {this.props.data.map((data, index) => {
+                                    return <div className={this.state.selectIndex === index ? "infocomplete-listitem-selected" : "infocomplete-listitem"} key={index + 1}
+                                        onClick={() => { this.setState({ selectIndex: index, currentPerson: data }) }}
+                                    >
 
-                                </Menu>
+                                        <div style={{ background: "lightgray", borderWidth: 1, width: 25, height: 20, textAlign: 'center', color: "white", }}>{index + 1}</div>
+                                        <div style={{ width: "98%", marginLeft: 10 }}> {data.name}  </div>
+
+
+                                    </div>
+                                })}
                             </div>
 
                         </Col>

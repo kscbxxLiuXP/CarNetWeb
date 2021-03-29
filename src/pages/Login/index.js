@@ -39,7 +39,7 @@ class Login extends React.Component {
         //服务器验证密码正确性
         let correct = password === 'admin' && username === 'admin';
         //返回token值
-        let token = username + '%' + 'asasdadads%' + moment().add(30, 'minutes').format("**YYYY-MM-DD-HH-mm-ss"); //当前时间加30分钟是token失效的时间
+        let token = username + '%' + 'asasdadads%' + moment().add(120, 'minutes').format("**YYYY-MM-DD-HH-mm-ss"); //当前时间加30分钟是token失效的时间
         //模拟得到服务器验证结果
         if (correct) {
             setToken(token);

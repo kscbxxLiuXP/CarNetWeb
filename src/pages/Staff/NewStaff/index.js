@@ -1,15 +1,18 @@
 import React from 'react';
-import { PageHeader, Upload, Button, Descriptions, Card, Collapse, Table, Affix, message, Spin, Modal,BackTop } from 'antd'
+import { PageHeader, Upload, Button, Descriptions, Card, Collapse, Table, Affix, message, Spin, Modal, BackTop } from 'antd'
 import { DownloadOutlined, PlusCircleOutlined, SettingOutlined, LoadingOutlined, CheckCircleTwoTone } from '@ant-design/icons';
 import ExcelImport from '../../../components/ExcelImport';
 import NewStaffForm from './NewStaffForm';
+import InfoComplete from './InfoComplete'
 import './style.css'
-import InfoComplete from './InfoComplete';
-const { Panel } = Collapse;
+import { staffCheckForNew, staffGetNextID, staffRegisterInGroup } from '../../../utils/apis/api_staff';
+import AvatarUpload from '../../../components/AvatarUpload';
+
 class NewStaff extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.columns = [
             {
                 title: "工号",
@@ -38,84 +41,26 @@ class NewStaff extends React.Component {
                 dataIndex: "操作",
                 render: (text, record) => (<Button type="danger" size="small" onClick={() => { this.onStaffDelete(record) }}>删除</Button>)
             }
-        ],
-            this.state = {
-                loading: false,
-                dataSource: [
-                    // {
-                    //     id: 1001,
-                    //     name: "不知道1",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // },
-                    // {
-                    //     id: 1002,
-                    //     name: "不知道2",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // },
-                    // {
-                    //     id: 1003,
-                    //     name: "不知道3",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // },
-                    // {
-                    //     id: 1004,
-                    //     name: "不知道4",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // },
-                    // {
-                    //     id: 1005,
-                    //     name: "不知道5",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // },
-                    // {
-                    //     id: 1001,
-                    //     name: "不知道1",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // },
-                    // {
-                    //     id: 1002,
-                    //     name: "不知道2",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // },
-                    // {
-                    //     id: 1003,
-                    //     name: "不知道3",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // },
-                    // {
-                    //     id: 1004,
-                    //     name: "不知道4",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // },
-                    // {
-                    //     id: 1005,
-                    //     name: "不知道5",
-                    //     idNumber: '321283200003127618',
-                    //     gender: '男',
-                    //     age: 18
-                    // }
-                ],
-                verifyFinish: false,
-                step: 1,
-            }
+        ];
+        this.state = {
+            loading: false,
+            dataSource: [
+             
+               
+              
+            ],
+            verifyFinish: false,
+            step: 1,
+            nextID: 1000,
+        }
+    }
+    getData() {
+        staffGetNextID().then(e => {
+            this.setState({ nextID: e })
+        })
+    }
+    componentDidMount() {
+        this.getData()
     }
     onStaffDelete = (record) => {
         const dataSource = [...this.state.dataSource];
@@ -143,12 +88,29 @@ class NewStaff extends React.Component {
     //所有员工列表提交
     onFormSubmit = () => {
         this.setState({ loading: true })
-        setTimeout(() => {
-            this.setState({ loading: false, verifyFinish: false, step: 2 })
-        }, 3000);
-        setTimeout(() => {
-            this.setState({ verifyFinish: true })
-        }, 1000);
+        staffCheckForNew(this.state.dataSource).then(e => {
+
+            if (e.length === 0) {
+
+                this.setState({ verifyFinish: true })
+                staffRegisterInGroup(this.state.dataSource)
+                message.success("注册成功！")
+                this.setState({ loading: false, verifyFinish: false, step: 2 })
+            } else {
+                Modal.error({
+                    title: '发现以下错误',
+                    content: <div>{e.map((item, index) => { return <div key={index}>{item}</div> })}</div>,
+                });
+                this.setState({ loading: false, verifyFinish: false })
+            }
+        })
+        console.log(this.state.dataSource)
+        // setTimeout(() => {
+        //     
+        // }, 5000);
+        // setTimeout(() => {
+        //     
+        // }, 1000);
     }
     handelExcelImport = values => {
         let { dataSource } = this.state;
@@ -193,24 +155,24 @@ class NewStaff extends React.Component {
                         <div>
                             <Spin tip="提交中..." spinning={this.state.loading}>
                                 <Card style={{ marginTop: 10 }} title="新员工">
-                                    <NewStaffForm onFormFinish={this.onFormFinish} />
+                                    <NewStaffForm nid={this.state.nextID} onFormFinish={this.onFormFinish} />
                                 </Card>
                                 <Card title="待添加列表" style={{ marginTop: 20 }} >
                                     <Table columns={this.columns} dataSource={this.state.dataSource} />
                                 </Card>
                             </Spin>
                         </div>
-                    
+
                         <Affix offsetBottom={20}>
                             <Card size="small" style={{ marginTop: 20 }} className="bottom-submit">
-                                <Button disabled={this.state.loading} style={{ float: "right" }} type="primary" onClick={this.onFormSubmit}>提交</Button>
+                                <Button disabled={this.state.loading} style={{ float: "right" }} type="primary" disabled={this.state.dataSource.length === 0} onClick={this.onFormSubmit}>提交</Button>
                                 {this.state.loading ? <div style={{ float: 'right', marginRight: 20, marginTop: 5 }}>
                                     {this.state.verifyFinish ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <LoadingOutlined style={{ fontSize: 20, marginRight: 5 }} />}
                                     {this.state.verifyFinish ? "验证完成" : "验证中"}
                                 </div> : null}
                             </Card>
                         </Affix>
-                    
+
                     </div> : <InfoComplete data={this.state.dataSource} onFormSubmit={() => {
                         this.setState({ step: 1, dataSource: [] });
                         Modal.info({
@@ -225,7 +187,7 @@ class NewStaff extends React.Component {
                         });
                     }} />
                 }
-                    <BackTop visibilityHeight={50} style={{ right: 100,bottom:10 }} />
+                <BackTop visibilityHeight={50} style={{ right: 100, bottom: 10 }} />
             </div>
 
         )

@@ -1,0 +1,55 @@
+.infocomplete-list {
+    padding: 10px;
+    border-radius: 5px;
+    border-style: dashed;
+    border-width: 1px;
+
+}
+
+.infocomplete-listitem {
+    margin-top: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+
+    transition: all 300ms;
+}
+.infocomplete-listitem:hover {
+    margin-top: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+
+    background-color: #eefaffd0;
+    transition: all 300ms;
+    cursor: pointer;
+}
+
+.infocomplete-listitem-selected {
+    margin-top: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+
+    background-color: #e6f7ff;
+    transition: all 300ms;
+  
+}
