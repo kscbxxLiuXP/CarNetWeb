@@ -1,11 +1,11 @@
 import React from "react";
 import { PageHeader, Descriptions, Button, Table, Tabs, Tag, message, Modal, Row, Card, Skeleton, BackTop, Statistic, Progress, Tooltip } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-
 import moment from 'moment'
 import { StaffForm } from "../StaffForm";
 import { AuthModal } from "../AuthModal";
-
+import { vehicleAll } from '../../../utils/apis/api_vehicle';
+import { staffDelete, staffGetByID } from "../../../utils/apis/api_staff";
 const key = "message key"
 const { confirm } = Modal;
 
@@ -61,13 +61,14 @@ class ViewStaff extends React.Component {
             authDataSource: [],
             taskLogDataSource: [],
             newAuthData: { ids: [], names: [] },//提交给新增权限表单的数据
-            authVisible: false//新增权限Modal的可视
+            authVisible: false,//新增权限Modal的可视
+            vehicleList: [],
         }
     }
     componentDidMount() {
 
-        let data = this.getData(this.props.match.params.id)
-        this.setState({ data })
+      this.getData(this.props.match.params.id)
+
         this.setState({
             authDataSource: [{
                 key: 1,
@@ -84,18 +85,23 @@ class ViewStaff extends React.Component {
                 state: 1,
             }]
         })
+        vehicleAll().then(e => {
 
+            e.forEach(element => {
+                element.key = element.id
+
+            });
+            this.setState({ vehicleList: e })
+            console.log(e);
+        })
 
     }
     getData(id) {
-
-        return {
-            id: id,
-            name: "员工1",
-            idNumber: "321283200005126478",
-            gender: "男",
-            age: "18",
-        }
+        //获取员工信息
+        staffGetByID(id).then(e=>{
+            this.setState({data:e})
+        })
+    
 
     }
     handleResolveAuth = (record) => {
@@ -125,6 +131,7 @@ class ViewStaff extends React.Component {
         }
     }
     handleDeleteStaff = () => {
+        var _this = this
         confirm({
             title: '你确定要删除这个员工吗?',
             icon: <ExclamationCircleOutlined />,
@@ -133,8 +140,11 @@ class ViewStaff extends React.Component {
             okType: 'danger',
             cancelText: '取消',
             onOk() {
-
-                message.success("删除成功！")
+                
+                staffDelete(_this.props.match.params.id).then(e => {
+                    message.success("删除成功！")
+                    _this.props.history.push('/home/staff/manage')
+                })
             },
         });
     }
@@ -170,7 +180,7 @@ class ViewStaff extends React.Component {
                     title={"员工ID：" + this.state.id}
                     tags={<Tag color="blue">作业中</Tag>}
                     extra={[
-                        <Button key="2" danger onClick={this.handleDeleteStaff}>删除任务</Button>,
+                        <Button key="2" danger onClick={this.handleDeleteStaff}>删除员工</Button>,
                         <Button key="1" type="primary" onClick={this.handleEditStaff}>
                             完善/修改信息
                         </Button>,
@@ -215,6 +225,8 @@ class ViewStaff extends React.Component {
 
                     }}
                     data={this.state.newAuthData}
+
+                    vehicleList={this.state.vehicleList}
                     onCancel={() => {
                         this.setState({ authVisible: false })
                     }}

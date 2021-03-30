@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { api_staff_check_for_new, api_staff_first, api_staff_get_next_id, api_staff_new } from './api';
+import { api_staff_check_for_new, api_staff_delete, api_staff_filter_by_condition, api_staff_first, api_staff_getOne, api_staff_get_next_id, api_staff_new, api_staff_update, api_staff_upload_photo } from './api';
 import Qs from 'qs'
 export async function staffCheckForNew(staffList) {
     var ee = []
@@ -58,4 +58,69 @@ export async function staffGetNextID() {
     });
     return res.data.data.id
 
+}
+
+export async function staffFilterByCondtion(id, name, idNumber) {
+    const res = await axios({
+        url: api_staff_filter_by_condition,
+        method: "get",
+        params: {
+            id: id,
+            name: name,
+            idNumber: idNumber
+        }
+    })
+    return res.data.data.staff
+}
+
+export async function staffUpdate(newStaff) {
+    const res = await axios({
+        url: api_staff_update,
+        method: "put",
+        data: newStaff
+    })
+    return res.data.data.staff
+}
+
+
+export async function staffDelete(id) {
+    const res = await axios({
+        url: api_staff_delete,
+        method: "delete",
+        params: {
+            id: id
+        }
+    })
+    return res.data.data.staff
+}
+
+export async function staffDeleteMany(ids) {
+    return new Promise((resolve, reject) => {
+        axios.all(
+            ids.map((item, index) => {
+                return axios({
+                    url: api_staff_delete,
+                    method: "delete",
+                    params: {
+                        id: item
+                    }
+                })
+            })
+        ).then(
+            axios.spread(e => {
+                resolve('完成')
+            })
+        )
+    })
+}
+
+export async function staffGetByID(id){
+    const res = await axios({
+        url:api_staff_getOne,
+        method:"get",
+        params:{
+            id:id
+        }
+    })
+    return res.data.data.staff
 }

@@ -1,8 +1,13 @@
 import React from 'react'
-import { Table, Button, message, Modal } from 'antd';
+import { Table, Button, message, Modal, Spin } from 'antd';
 import { StaffForm } from './StaffForm';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { AuthModal } from './AuthModal';
+import { staffDelete, staffDeleteMany, staffUpdate } from '../../utils/apis/api_staff';
+import { LoadingOutlined } from '@ant-design/icons';
+import { vehicleAll } from '../../utils/apis/api_vehicle';
+
+const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const { confirm } = Modal
 const key = "message key"
 class StaffTable extends React.Component {
@@ -41,18 +46,20 @@ class StaffTable extends React.Component {
                         <Button onClick={() => {
                             let _this = this
                             confirm({
-                                title: '你确定要删除这个任务吗?',
+                                title: '你确定要删除这个员工吗?',
                                 icon: <ExclamationCircleOutlined />,
 
                                 okText: '删除',
                                 okType: 'danger',
                                 cancelText: '取消',
                                 onOk() {
-                                    const data = [..._this.state.dataSource];
-                                    _this.setState({
-                                        dataSource: data.filter((i) => i.id !== record.id),
-                                    });
-                                    message.success("删除成功！")
+                                    _this.setState({ loading: true })
+                                    staffDelete(record.id).then(e => {
+                                        message.success("删除成功！")
+                                        _this.props.getData()
+                                        _this.setState({ loading: false })
+                                    })
+
                                 },
                             });
                         }}>删除</Button>
@@ -65,63 +72,44 @@ class StaffTable extends React.Component {
             loading: false,
             visible: false,
             data: {},
-            dataSource: [],
             authVisible: false,
             selectedData: { ids: ['1'], names: ['1'] },
-            selectedRows: []
+            selectedRows: [],
+            vehicleList: [],
+            addresses: [],
         };
 
     }
 
 
+
     componentDidMount() {
-        const data = [];
-        for (let i = 0; i < 46; i++) {
-            data.push({
-                key: i,
-                name: `Edward King ${i}`,
-                id: i,
-                idNumber: "321283200000000000",
-                age: 32,
-                gender: "男"
+
+
+        vehicleAll().then(e => {
+
+            e.forEach(element => {
+                element.key = element.id
+
             });
-        }
-        this.setState({ dataSource: data })
+            this.setState({ vehicleList: e })
+
+        })
     }
-
-    start = () => {
-        this.setState({ loading: true });
-        // ajax request after empty completing
-        setTimeout(() => {
-            this.setState({
-                selectedRowKeys: [],
-                loading: false,
-            });
-        }, 1000);
-    };
-
     onSelectChange = (selectedRowKeys, selectedRows) => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
+
         this.setState({ selectedRowKeys, selectedRows });
     };
     //表单提交后的回调函数
     onCreate = (values) => {
         console.log('Received values of form: ', values);
-
-        //fixme 为什么这里一定要写成[...this.state.dataSource]
-        let newData = [...this.state.dataSource];
-        let index = newData.findIndex((item) => values.id === item.id);
-        let item = newData[index];
-        newData.splice(index, 1, { ...item, ...values });
-        this.setState({
-            dataSource: newData,
-        });
-
         message.loading({ content: '修改中...', key, duration: 2 })
-        setTimeout(() => {
+        //update
+        staffUpdate(values).then(e => {
             this.setState({ visible: false })
             message.success({ content: '修改成功!', key, duration: 2 })
-        }, 500)
+            this.props.getData()
+        })
 
     };
 
@@ -147,16 +135,21 @@ class StaffTable extends React.Component {
             okType: 'danger',
             cancelText: '取消',
             onOk() {
-                message.warning("注销成功！")
+                _this.setState({ loading: true })
 
-                var data = [..._this.state.dataSource];
+                var ids = []
 
                 _this.state.selectedRows.forEach(it => {
+                    ids.push(it.id)
+                })
+                //TODO 批量注销
+                staffDeleteMany(ids).then(e => {
 
-                    data = data.filter((i) => i.id !== it.id)
+                    _this.setState({ selectedRowKeys: [], selectedRows: [], loading: false })
+                    _this.props.getData()
+                    message.warning("注销成功！")
                 })
 
-                _this.setState({ selectedRowKeys: [], selectedRows: [], dataSource: data })
             },
 
         });
@@ -172,26 +165,28 @@ class StaffTable extends React.Component {
         const hasSelected = selectedRowKeys.length > 0;
         return (
             <div>
-                <div style={{ marginBottom: 16 }}>
-                    <Button type="primary" onClick={this.handleAuth} disabled={!hasSelected} >
-                        批量授权
+                <Spin indicator={antIcon} spinning={this.props.loading || this.state.loading}>
+                    <div style={{ marginBottom: 16 }}>
+                        <Button type="primary" onClick={this.handleAuth} disabled={!hasSelected} >
+                            批量授权
                     </Button>
-                    <Button style={{ marginLeft: 10 }} type="danger" onClick={this.handleDelete} disabled={!hasSelected} loading={loading}>
-                        批量注销
+                        <Button style={{ marginLeft: 10 }} type="danger" onClick={this.handleDelete} disabled={!hasSelected} loading={loading}>
+                            批量注销
                     </Button>
-                    <span style={{ marginLeft: 8 }}>
-                        {hasSelected ? `已选 ${selectedRowKeys.length} 项` : ''}
-                    </span>
-                </div>
-                <Table rowSelection={rowSelection} columns={this.columns} dataSource={this.state.dataSource} />
-                <StaffForm
-                    visible={this.state.visible}
-                    onCreate={this.onCreate}
-                    initialValues={this.state.data}
-                    onCancel={() => {
-                        this.setState({ visible: false })
-                    }}
-                />
+                        <span style={{ marginLeft: 8 }}>
+                            {hasSelected ? `已选 ${selectedRowKeys.length} 项` : ''}
+                        </span>
+                    </div>
+                    <Table rowSelection={rowSelection} columns={this.columns} dataSource={this.props.dataSource} />
+                    <StaffForm
+                        visible={this.state.visible}
+                        onCreate={this.onCreate}
+                        initialValues={this.state.data}
+                        onCancel={() => {
+                            this.setState({ visible: false })
+                        }}
+                    />
+                </Spin>
                 <AuthModal
                     visible={this.state.authVisible}
                     onCreate={() => {
@@ -199,6 +194,8 @@ class StaffTable extends React.Component {
                         message.success("授权成功！")
                     }}
                     data={this.state.selectedData}
+
+                    vehicleList={this.state.vehicleList}
                     onCancel={() => {
                         this.setState({ authVisible: false })
                     }}

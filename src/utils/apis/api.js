@@ -11,11 +11,13 @@ export const basic_staff_url = basic_url + '/staff'
 export const api_address_getOne = basic_address_url + '/get'
 export const api_address_all = basic_address_url + '/all'
 
+
 //setting
 export const api_setting_getOne = basic_setting_url + '/get'
 
 //vehicle
 export const api_vehicle_new = basic_vehicle_url + '/new'
+export const api_vehicle_all = basic_vehicle_url + '/all'
 
 //staff
 export const api_staff_new = basic_staff_url + '/new'
@@ -24,3 +26,6 @@ export const api_staff_getOne = basic_staff_url + '/get'
 export const api_staff_first = basic_staff_url + '/first'
 export const api_staff_get_next_id = basic_staff_url + '/getNextID'
 export const api_staff_upload_photo = basic_staff_url + '/uploadPhoto'
+export const api_staff_filter_by_condition = basic_staff_url + '/filterByCondition'
+export const api_staff_update = basic_staff_url + '/update'
+export const api_staff_delete = basic_staff_url + '/delete'

@@ -4,6 +4,7 @@ import TagFilter from "../../components/Filter/TagFilter";
 import { MyIcon } from '../../components/MyIcon/index'
 import VehicleCard from "../../components/VehicleCard";
 import StaffTable from './StaffTable';
+import { staffFilterByCondtion } from '../../utils/apis/api_staff';
 const { Option } = Select
 class Staff extends React.Component {
     constructor(props) {
@@ -12,7 +13,23 @@ class Staff extends React.Component {
             idFilter: "",
             idNumberFilter: "",
             nameFilter: "",
+            dataSource: [],
+            loading: false,
         }
+    }
+    getData() {
+        this.setState({
+            loading: true
+        })
+        staffFilterByCondtion(this.state.idFilter, this.state.nameFilter, this.state.idNumberFilter).then(e => {
+            e.forEach(element => {
+                element.key = element.id
+            });
+            this.setState({ dataSource: e, loading: false })
+        })
+    }
+    componentDidMount() {
+        this.getData()
     }
     handleFilterReset = () => {
         this.setState({
@@ -20,16 +37,10 @@ class Staff extends React.Component {
             idNumberFilter: "",
             nameFilter: "",
 
-        })
+        }, () => { this.getData() })
     }
     handleFilterSearch = () => {
-        const { idNumberFilter, idFilter, nameFilter } = this.state;
-        const filters = {
-            id: idFilter,
-            idNumber: idNumberFilter,
-            name: nameFilter,
-        }
-        console.log(filters);
+        this.getData()
     }
     render() {
         return (
@@ -42,7 +53,9 @@ class Staff extends React.Component {
 
                 </PageHeader>
                 <div style={{ marginTop: 20 }}>
-                    <Card>
+                    <Card
+
+                    >
                         <div>
                             员工ID：<Input
                                 style={{ width: 250 }}
@@ -74,8 +87,8 @@ class Staff extends React.Component {
 
                     </Card>
                     <br />
-                    <Card title="员工列表">
-                        <StaffTable />
+                    <Card title="员工列表" extra={<Button onClick={() => { this.getData() }}>刷新</Button>}>
+                        <StaffTable dataSource={this.state.dataSource} loading={this.state.loading} getData={() => { this.getData() }} />
                     </Card>
                 </div>
             </div>
