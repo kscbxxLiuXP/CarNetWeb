@@ -3,6 +3,8 @@ import { PageHeader, Descriptions, Button, Table, Tabs, Tag, message, Modal, Row
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { TaskForm } from "../TaskForm";
 import moment from 'moment'
+import { taskDelete, taskGetOne, taskUpdate } from "../../../utils/apis/api_task";
+import { staffGetAll, staffGetByID } from "../../../utils/apis/api_staff";
 
 const key = "message key"
 const { confirm } = Modal;
@@ -14,33 +16,29 @@ class ViewTask extends React.Component {
             data: {},
             visible: false,
             formData: {},
+            staffList: [],
+            staff: {}
         }
     }
 
     componentDidMount() {
-
-        let data = this.getData(this.props.match.params.id)
-        this.setState({ data })
-
-
-
+        staffGetAll().then(e => {
+            this.setState({ staffList: e })
+        })
+        this.getData(this.props.match.params.id)
     }
     getData(id) {
-
-        return {
-            id: id,
-            name: "任务1",
-            description: "这是任务1的描述",
-            master: "负责人1",
-            startTime: "2020-12-31 17:00:05",
-            endTime: "2021-01-10 18:30:00",
-            process: 85,
-            address: "辽宁省沈阳市浑南区东北大学"
-
-        }
+        taskGetOne(id).then(e => {
+            this.setState({ data: e }, () => {
+                staffGetByID(this.state.data.masterID).then(e => {
+                    this.setState({ staff: e })
+                })
+            })
+        })
 
     }
     handleDeleteTask = () => {
+        var _this = this
         confirm({
             title: '你确定要删除这个任务吗?',
             icon: <ExclamationCircleOutlined />,
@@ -49,8 +47,11 @@ class ViewTask extends React.Component {
             okType: 'danger',
             cancelText: '取消',
             onOk() {
-
-                message.success("删除成功！")
+                message.loading({ content: '删除中...', key, duration: 1 })
+                taskDelete(_this.props.match.params.id).then(e => {
+                    message.success({ content: '删除成功!', key, duration: 2 })
+                    _this.props.history.push('/home/task/manage')
+                })
             },
         });
     }
@@ -67,12 +68,18 @@ class ViewTask extends React.Component {
     //表单提交后的回调函数
     onCreate = (values) => {
         console.log('Received values of form: ', values);
-        this.setState({ data: values })
+        values.state = this.state.data.state
+        values.progress = this.state.data.process
+        values.executeTime = this.state.data.executeTime
         message.loading({ content: '修改中...', key, duration: 2 })
-        setTimeout(() => {
+        //修改
+        taskUpdate(values).then(e => {
+            console.log(values)
+
             this.setState({ visible: false })
             message.success({ content: '修改成功!', key, duration: 2 })
-        }, 500)
+            this.getData(this.props.match.params.id)
+        })
 
     };
     render() {
@@ -106,7 +113,7 @@ class ViewTask extends React.Component {
 
 
                             <Descriptions.Item label="开始时间">{this.state.data.startTime}</Descriptions.Item>
-                            <Descriptions.Item label="负责人">{this.state.data.master}</Descriptions.Item>
+                            <Descriptions.Item label="负责人">{this.state.staff.name}</Descriptions.Item>
                             <Descriptions.Item label="截止时间">{this.state.data.endTime}</Descriptions.Item>
                             <Descriptions.Item label="任务地址" span={2}>{this.state.data.address}</Descriptions.Item>
                             <Descriptions.Item label="任务描述" span={2}>{this.state.data.description}</Descriptions.Item>
@@ -124,6 +131,7 @@ class ViewTask extends React.Component {
                     onCancel={() => {
                         this.setState({ visible: false })
                     }}
+                    staffList={this.state.staffList}
                 />
                 <BackTop visibilityHeight={100} style={{ right: 50 }} />
             </div>

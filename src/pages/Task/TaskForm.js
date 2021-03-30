@@ -1,9 +1,11 @@
 
-import React from 'react';
-import { Modal, Form, Input, Select,DatePicker,Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Modal, Form, Input, Select, DatePicker, Button } from 'antd';
+import Map from '../../components/Map';
+import { EnvironmentOutlined, ExclamationCircleOutlined } from "@ant-design/icons"
 
 const { Option } = Select
-const{TextArea}=Input;
+const { TextArea } = Input;
 
 
 const layout = {
@@ -16,23 +18,32 @@ const layout = {
 };
 function onChange(value) {
     console.log(`selected ${value}`);
+
 }
 
-function onBlur() {
-    console.log('blur');
-}
-
-function onFocus() {
-    console.log('focus');
-}
 
 function onSearch(val) {
     console.log('search:', val);
 }
 //使用组件方式创建form
-export const TaskForm = ({ visible, onCreate, initialValues, onCancel }) => {
+export const TaskForm = ({ visible, onCreate, initialValues, onCancel, staffList }) => {
     const [form] = Form.useForm();
     form.setFieldsValue(initialValues)
+
+    const [mVisible, setVisible] = useState(false)
+    const [addressNode, setAddressNode] = useState({})
+    const [tmpAddressNode, setTmpAddressNode] = useState({})
+    useEffect(() => {
+        var i = { id: initialValues.address }
+        setTmpAddressNode(i)
+        setAddressNode(i)
+    }, [initialValues])
+    useEffect(() => {
+        //formsetfield
+        form.setFieldsValue({
+            address: addressNode.id,
+        });
+    }, [addressNode])
     return (
         <Modal
 
@@ -53,6 +64,8 @@ export const TaskForm = ({ visible, onCreate, initialValues, onCancel }) => {
                             'endTime': values['endTime'].format('YYYY-MM-DD HH:mm:ss'),
                         };
                         onCreate(r);
+                        setAddressNode({})
+                        setTmpAddressNode({})
                     })
                     .catch((info) => {
                         console.log('Validate Failed:', info);
@@ -100,7 +113,7 @@ export const TaskForm = ({ visible, onCreate, initialValues, onCancel }) => {
                     <TextArea placeholder="任务描述" showCount maxLength={50} allowClear />
                 </Form.Item>
                 <Form.Item
-                    name="master"
+                    name="masterID"
                     label="负责人"
                     rules={
                         [
@@ -113,17 +126,15 @@ export const TaskForm = ({ visible, onCreate, initialValues, onCancel }) => {
                         style={{ width: 200 }}
                         placeholder="Select a person"
                         optionFilterProp="children"
-                        onChange={onchange}
-                        onFocus={onFocus}
-                        onBlur={onBlur}
+                        onChange={onChange}
                         onSearch={onSearch}
                         filterOption={(input, option) =>
                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                     >
-                        <Option value="jack">Jack</Option>
-                        <Option value="lucy">Lucy</Option>
-                        <Option value="tom">Tom</Option>
+                        {staffList.map((item, index) => {
+                            return <Option key={index} value={item.id}>{item.name}</Option>
+                        })}
                     </Select>
                 </Form.Item>
                 <Form.Item
@@ -153,13 +164,44 @@ export const TaskForm = ({ visible, onCreate, initialValues, onCancel }) => {
                     label="任务地址"
                     rules={
                         [
-                            { required: true, message: "请输入任务执行地址" }
+                            { required: true, message: "请选择任务执行地址" }
                         ]
                     }
                 >
-                    <Input placeholder="任务执行地址" allowClear />
+                    <Input placeholder="任务执行地址" value={addressNode.id} readOnly allowClear />
+                    <Button style={{ marginTop: 10 }} size="middle" icon={<EnvironmentOutlined />} onClick={() => { setVisible(true) }}>选择</Button>
                 </Form.Item>
             </Form>
+            <Modal
+                visible={mVisible}
+                onCancel={() => {
+                    var a = addressNode
+                    setVisible(false)
+                    setTmpAddressNode(a)
+
+                }}
+                onOk={() => {
+                    var a = tmpAddressNode
+                    setVisible(false)
+                    setAddressNode(a)
+
+
+                }}
+                title="地址选择"
+                width={650}
+                okText="确认"
+                cancelText="取消"
+            >
+                <Map width={600} height={600} selectedNode={tmpAddressNode.id} onAddressNodeClick={(addressNode) => {
+                    console.log(`clicked${addressNode.id}`);
+                    setTmpAddressNode(addressNode)
+
+                }} />
+                <div>
+                    当前选择节点：
+                        {tmpAddressNode.id}
+                </div>
+            </Modal>
         </Modal>
     );
 };

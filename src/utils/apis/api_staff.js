@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { api_staff_check_for_new, api_staff_delete, api_staff_filter_by_condition, api_staff_first, api_staff_getOne, api_staff_get_next_id, api_staff_new, api_staff_update, api_staff_upload_photo } from './api';
+import { api_staff_check_for_new, api_staff_delete, api_staff_filter_by_condition, api_staff_all, api_staff_getOne, api_staff_get_next_id, api_staff_new, api_staff_update, api_staff_upload_photo } from './api';
 import Qs from 'qs'
 export async function staffCheckForNew(staffList) {
     var ee = []
@@ -121,6 +121,13 @@ export async function staffGetByID(id){
         params:{
             id:id
         }
+    })
+    return res.data.data.staff
+}
+export async function staffGetAll(){
+    const res = await axios({
+        url:api_staff_all,
+        method:"get"
     })
     return res.data.data.staff
 }

@@ -3,7 +3,7 @@ import React from "react";
 import { Stage, Layer, Rect, Group, Circle, Wedge, Text, Ellipse, Line, Arrow } from 'react-konva';
 import { buildingData, getPath, roadData, roadNodedata } from "../../utils/mapData";
 import { SearchOutlined, PlusOutlined, MinusOutlined, AimOutlined } from '@ant-design/icons';
-import Tip from "./Tip";
+
 class Map extends React.Component {
     state = {
         backFill1: "white",
@@ -15,13 +15,31 @@ class Map extends React.Component {
         y: -1,
         show: false,
         text: "",
+        selectedNode: -1,
+        width: 1000,
+        height: 800
     }
 
-
+    componentDidMount() {
+        if (this.props.selectedNode) {
+            this.setState({ selectedNode: this.props.selectedNode })
+        }
+        if (this.props.width) {
+            this.setState({ width: this.props.width })
+        }
+        if (this.props.height) {
+            this.setState({ height: this.props.height })
+        }
+    }
+    componentWillReceiveProps(n) {
+        if (n.selectedNode) {
+            this.setState({ selectedNode: n.selectedNode })
+        }
+    }
     render() {
         return (
-            <div style={{ width: 1002, borderStyle: "solid", borderColor: "black", borderWidth: 1, position: "relative" }}>
-                <Stage width={1000} height={800}>
+            <div style={{ width: this.state.width + 2, borderStyle: "solid", borderColor: "black", borderWidth: 1, position: "relative" }}>
+                <Stage width={this.state.width} height={this.state.height}>
                     <Layer >
                         {/* 画底图 */}
                         {/* 封闭形状 */}
@@ -140,10 +158,10 @@ class Map extends React.Component {
                                     key={index}
                                     stroke="black"
                                     strokeWidth={1}
-                                    fill={"#f3a6b2"}
+                                    fill={this.state.selectedNode === item.id ? "red" : "#f3a6b2"}
                                     radius={5}
-                                    scaleX={this.state.hoverNode === item.id ? 1.2 : 1}
-                                    scaleY={this.state.hoverNode === item.id ? 1.2 : 1}
+                                    scaleX={this.state.hoverNode === item.id || this.state.selectedNode === item.id ? 1.2 : 1}
+                                    scaleY={this.state.hoverNode === item.id || this.state.selectedNode === item.id ? 1.2 : 1}
                                     onMouseMove={
                                         (e) => {
                                             let pos = e.target.getStage().getPointerPosition();
@@ -177,6 +195,10 @@ class Map extends React.Component {
                                         () => {
 
                                             message.info(`这是节点${item.id}`)
+                                            if (this.props.onAddressNodeClick) {
+                                                this.props.onAddressNodeClick(item)
+                                            }
+
                                         }
                                     }
                                 />
@@ -192,8 +214,8 @@ class Map extends React.Component {
                                 radius={6}
                             />
                             <Group
-                           
-                               
+
+
                             >
                                 <Rect
                                     x={this.state.x}

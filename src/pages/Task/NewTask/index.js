@@ -1,5 +1,12 @@
 import React, { createRef } from "react";
-import { PageHeader, Card, Form, Input, Button, DatePicker, message,Select } from 'antd'
+import { PageHeader, Card, Form, Input, Button,Modal,DatePicker, message, Select } from 'antd'
+import { taskGetNextID, taskNew } from "../../../utils/apis/api_task";
+import { staffGetAll, staffGetByID } from "../../../utils/apis/api_staff";
+import { EnvironmentOutlined, ExclamationCircleOutlined } from "@ant-design/icons"
+import Map from "../../../components/Map";
+
+const { confirm } = Modal;
+
 const { Option } = Select;
 const { TextArea } = Input;
 const layout = {
@@ -20,29 +27,59 @@ class NewTask extends React.Component {
     constructor(props) {
         super(props);
         this.formRef = createRef()
+        this.state = {
+            staffList: [],
+            addressNode: {
+
+            },
+            tmpAddressNode: {},
+            visible: false,
+        }
     }
 
 
     componentDidMount() {
         this.getID()
+
+        staffGetAll().then(
+            e => {
+                this.setState({ staffList: e })
+            }
+        )
     }
     getID() {
-        this.formRef.current.setFieldsValue({
-            id: '20210101',
-        });
+        taskGetNextID().then(e => {
+            this.formRef.current.setFieldsValue({
+                id: e,
+            });
+        })
+
 
     }
 
     handleFormSubmit = fieldsValue => {
-        this.formRef.current.resetFields()
-        this.getID()
+
+
         const values = {
             ...fieldsValue,
             'startTime': fieldsValue['startTime'].format('YYYY-MM-DD HH:mm:ss'),
             'endTime': fieldsValue['endTime'].format('YYYY-MM-DD HH:mm:ss'),
         };
-        console.log(values)
-        message.success("提交成功！")
+        console.log(values);
+        taskNew(values).then(e => {
+            console.log(values)
+            message.success("提交成功！")
+            this.formRef.current.resetFields()
+
+            this.getID()
+            this.setState({
+                addressNode: {
+
+                },
+                tmpAddressNode: {},
+            })
+        })
+
     }
 
 
@@ -50,13 +87,7 @@ class NewTask extends React.Component {
         console.log(`selected ${value}`);
     }
 
-    onBlur() {
-        console.log('blur');
-    }
 
-    onFocus() {
-        console.log('focus');
-    }
 
     onSearch(val) {
         console.log('search:', val);
@@ -114,7 +145,7 @@ class NewTask extends React.Component {
                             <TextArea placeholder="任务描述" showCount maxLength={50} allowClear />
                         </Form.Item>
                         <Form.Item
-                            name="master"
+                            name="masterID"
                             label="负责人"
                             rules={
                                 [
@@ -125,19 +156,18 @@ class NewTask extends React.Component {
                             <Select
                                 showSearch
                                 style={{ width: 200 }}
-                                placeholder="Select a person"
+                                placeholder="选择任务执行员工"
                                 optionFilterProp="children"
-                                onChange={this.onchange}
-                                onFocus={this.onFocus}
-                                onBlur={this.onBlur}
+                                onChange={this.onChange}
                                 onSearch={this.onSearch}
                                 filterOption={(input, option) =>
                                     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                 }
                             >
-                                <Option value="jack">Jack</Option>
-                                <Option value="lucy">Lucy</Option>
-                                <Option value="tom">Tom</Option>
+                                {this.state.staffList.map((item, index) => {
+                                    return <Option key={index} value={item.id}>{item.name}</Option>
+                                })}
+
                             </Select>
                         </Form.Item>
                         <Form.Item
@@ -149,29 +179,34 @@ class NewTask extends React.Component {
                                 ]
                             }
                         >
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" allowClear />
+                            <DatePicker
+                                placeholder="选择任务开始时间"
+                                showTime format="YYYY-MM-DD HH:mm:ss" allowClear />
                         </Form.Item>
                         <Form.Item
                             name="endTime"
                             label="结束时间"
+
+
                             rules={
                                 [
                                     { required: true, message: "请输入任务结束时间" }
                                 ]
                             }
                         >
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" allowClear />
+                            <DatePicker placeholder="选择任务结束时间" showTime format="YYYY-MM-DD HH:mm:ss" allowClear />
                         </Form.Item>
                         <Form.Item
                             name="address"
                             label="任务地址"
                             rules={
                                 [
-                                    { required: true, message: "请输入任务执行地址" }
+                                    { required: true, message: "请选择任务执行地址" }
                                 ]
                             }
                         >
-                            <Input placeholder="任务执行地址" allowClear />
+                            <Input placeholder="任务执行地址" value={this.state.addressNode.id} readOnly allowClear />
+                            <Button style={{ marginTop: 10 }} size="middle" icon={<EnvironmentOutlined />} onClick={() => { this.setState({ visible: true }) }}>选择</Button>
                         </Form.Item>
                         <Form.Item {...tailLayout}>
                             <Button type="primary" htmlType="submit" >提交</Button>
@@ -180,6 +215,43 @@ class NewTask extends React.Component {
 
                     </Form>
                 </Card>
+                <Modal
+                    visible={this.state.visible}
+                    onCancel={() => {
+                        var a = this.state.addressNode
+                        this.setState({
+                            visible: false,
+                            tmpAddressNode: a
+                        })
+                    }}
+                    onOk={() => {
+                        var a = this.state.tmpAddressNode
+                        this.setState({
+                            visible: false,
+                            addressNode: a
+                        }, () => {
+                            this.formRef.current.setFieldsValue({
+                                address: this.state.addressNode.id,
+                            });
+                        })
+
+                    }}
+                    title="地址选择"
+                    width={650}
+                    okText="确认"
+                    cancelText="取消"
+                >
+                    <Map width={600} height={600} selectedNode={this.state.tmpAddressNode.id} onAddressNodeClick={(addressNode) => {
+                        console.log(`clicked${addressNode.id}`);
+                        this.setState({
+                            tmpAddressNode: addressNode
+                        })
+                    }} />
+                    <div>
+                        当前选择节点：
+                        {this.state.tmpAddressNode.id}
+                    </div>
+                </Modal>
             </div>
         )
     }
