@@ -2,7 +2,8 @@ import React from 'react';
 import { Switch, Space, Divider, Table, Button, Modal, Tag, Popconfirm, Form, Input, message } from 'antd';
 import SettingItem from '../../../components/SettingItem';
 import { EnvironmentOutlined, EditOutlined, DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons'
-
+import { settingGetRegisterOpen, settingUpdateRegisterOpen } from '../../../utils/apis/api_setting';
+import { addressDelete, addressGetAll, addressNew, addressUpdate } from '../../../utils/apis/api_address';
 
 //表单布局
 const layout = {
@@ -86,36 +87,16 @@ class CarSetting extends React.Component {
     //连接表单
     formRef = React.createRef();
     //列表点击删除
-    handleDelete = key => {
-        const dataSource = [...this.state.dataSource];
-        this.setState({
-            dataSource: dataSource.filter((item) => item.key !== key),
-        });
+    handleDelete = id => {
+        message.loading({ content: '删除中...', key, duration: 2 })
+        addressDelete(id).then(e => {
+            message.success({ content: '删除成功！', key, duration: 2 })
+            this.getData()
+        })
     }
     //
     constructor(props) {
         super(props);
-        //模拟地址
-        this.addresses = [
-            {
-                id: 1,
-                key: '1',
-                address: "辽宁省沈阳市浑南区东北大学",
-                label: "辽宁沈阳浑南",
-            },
-            {
-                id: 2,
-                key: '2',
-                address: "辽宁省沈阳市南湖东北大学",
-                label: "辽宁沈阳南湖",
-            },
-            {
-                id: 3,
-                key: '3',
-                address: "河北省秦皇帝市经济开发区东北大学秦皇岛分校",
-                label: "河北秦皇岛"
-            }
-        ];
         this.columns = [
             {
                 title: 'id',
@@ -135,7 +116,7 @@ class CarSetting extends React.Component {
                 dataIndex: "操作",
                 render: (text, record) => (
                     <Space>
-                        <Popconfirm title="确定要删除吗?" okText="确认" cancelText="取消" onConfirm={() => this.handleDelete(record.key)}>
+                        <Popconfirm title="确定要删除吗?" okText="确认" cancelText="取消" onConfirm={() => this.handleDelete(record.id)}>
                             <Button size="small" type="danger" icon={<DeleteOutlined />} >删除</Button>
                         </Popconfirm>
                         <Button size="small" type="primary" icon={<EditOutlined />} onClick={() => {
@@ -149,20 +130,36 @@ class CarSetting extends React.Component {
 
         ];
         this.state = {
-            dataSource: this.addresses,
+            dataSource: [],
             visible: false,
             currentAddress: {},
             addressSubmitLoading: false,
             type: 'add',
-            count: this.addresses.length
+            count: 0,
         };
 
 
     }
-
+    getData() {
+        addressGetAll().then(e => {
+            this.setState({ dataSource: e, count: e.length })
+        })
+    }
+    componentDidMount() {
+        settingGetRegisterOpen().then(e => {
+            this.setState({
+                checked: e === 1
+            })
+        })
+        this.getData()
+    }
     //注册开放设置
     onRegisterOpenChange = (checked) => {
-        console.log(`switch to ${checked}`);
+        var v = checked ? 1 : 0
+        settingUpdateRegisterOpen(v).then(e => {
+            message.success("设置修改成功！")
+            this.setState({ checked })
+        })
     }
 
     //表单提交后的回调函数
@@ -170,29 +167,26 @@ class CarSetting extends React.Component {
         console.log('Received values of form: ', values);
         switch (this.state.type) {
             case 'edit':
-                //fixme 为什么这里一定要写成[...this.state.dataSource]
-                let newData = [...this.state.dataSource];
-                let index = newData.findIndex((item) => values.key === item.key);
-                let item = newData[index];
-                newData.splice(index, 1, { ...item, ...values });
-                this.setState({
-                    dataSource: newData,
-                });
-                message.success("修改成功！");
+                message.loading({ content: '修改中...', key, duration: 2 })
+                addressUpdate(values).then(e => {
+                    message.success({ content: '修改成功!', key, duration: 2 })
+                    this.getData()
+                    this.setState({ visible: false })
+                })
 
                 break;
 
             case 'add':
-                let data = [...this.state.dataSource];
-                data.push(values)
-                this.setState({
-                    dataSource: data
+                console.log(values);
+                message.loading({ content: '添加中...', key, duration: 2 })
+                addressNew(values).then(e => {
+                    message.success({ content: '添加成功!', key, duration: 2 })
+                    this.getData()
+                    this.setState({ visible: false })
                 })
-                message.success("添加成功!");
                 break;
         }
 
-        this.setState({ visible: false })
     };
 
     render() {
@@ -201,7 +195,7 @@ class CarSetting extends React.Component {
             <div >
                 <Divider orientation="left" style={{ fontWeight: 'bold' }}>注册设置</Divider>
                 <SettingItem title="开放注册">
-                    <Switch defaultChecked onChange={this.onRegisterOpenChange} />
+                    <Switch checked={this.state.checked} onChange={this.onRegisterOpenChange} />
                 </SettingItem>
                 <Divider orientation="left" style={{ fontWeight: 'bold' }} ><EnvironmentOutlined />地址管理</Divider>
                 <SettingItem >

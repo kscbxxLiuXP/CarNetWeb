@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { Button, Form, Input, message,Divider, } from "antd";
+import { Button, Form, Input, message, Divider, } from "antd";
 import md5 from 'js-md5'
 import { getUsername } from '../../../utils/auth';
+import { userGetOne, userUpdate } from '../../../utils/apis/api_user';
 const formItemLayout = {
     labelCol: {
         xs: { span: 20 },
@@ -32,27 +33,28 @@ class AccountSetting extends React.Component {
         firstpassword: null,
         secondpassword: null,
     }
-    changePassword(data) {
-        axios({
-            url: ApiUtil.API_CHECK_PASSWORD + data.username + '/' + data.oldpassword,
-            method: 'get'
-        }).then(res => {
-            if (res.data.code === 1) {
-                axios({
-                    url: ApiUtil.URL_IP + '/api/changePassword',
-                    method: 'post',
-                    data: data
-                }).then(res => {
-                    if (res.data.code === 0) {
-                        message.success('修改成功！')
-                    } else {
-                        message.error('修改失败，请重新尝试！')
-                    }
-                })
-            } else {
-                message.error('原密码错误！')
-            }
+    getData(){
+        userGetOne(getUsername()).then(e => {
+            this.setState({ user: e })
         })
+    }
+    componentDidMount() {
+        this.getData()
+    }
+    changePassword(data) {
+        if (this.state.user.password === data.oldpassword) {
+            var n = {
+                username: data.username,
+                password: data.password
+            }
+            userUpdate(n).then(res=>{
+                message.success('修改成功！')
+                this.formRef.current.resetFields();
+                this.getData()
+            })
+        } else {
+            message.error("原密码错误！")
+        }
 
     }
 
@@ -61,9 +63,9 @@ class AccountSetting extends React.Component {
         console.log(values)
         let data = values
         data.username = getUsername()
-        data.password = md5(values.newpassword)
-        data.oldpassword = md5(values.oldpassword)
-        // this.changePassword(data)
+        data.password = values.newpassword
+        data.oldpassword = values.oldpassword
+        this.changePassword(data)
 
 
     };
@@ -90,7 +92,7 @@ class AccountSetting extends React.Component {
     render() {
         return (
             <div>
-                       <Divider orientation="left" style={{ fontWeight: 'bold' }}>修改密码</Divider>
+                <Divider orientation="left" style={{ fontWeight: 'bold' }}>修改密码</Divider>
                 <Form {...formItemLayout} className='changepassword' ref={this.formRef} onFinish={this.handleSubmit}>
                     <Form.Item label="原密码" hasFeedback
                         name="oldpassword"
