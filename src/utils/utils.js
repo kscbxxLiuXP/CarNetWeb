@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export function formatFileSize(fileSize) {
     if (fileSize < 1024) {
         return fileSize + 'B';
@@ -16,4 +18,7 @@ export function formatFileSize(fileSize) {
         temp = temp.toFixed(2);
         return temp + 'GB';
     }
+}
+export function timeFormat(timeString){
+    return moment(timeString).format("YYYY-MM-DD HH:MM:SS")
 }

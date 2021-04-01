@@ -8,6 +8,7 @@ export const basic_vehicle_url = basic_url + '/vehicle'
 export const basic_staff_url = basic_url + '/staff'
 export const basic_task_url = basic_url + '/task'
 export const basic_user_url = basic_url + '/user'
+export const basic_job_url = basic_url + '/job'
 
 //address
 export const api_address_getOne = basic_address_url + '/get'
@@ -23,6 +24,7 @@ export const api_setting_update = basic_setting_url + '/update'
 //vehicle
 export const api_vehicle_new = basic_vehicle_url + '/new'
 export const api_vehicle_all = basic_vehicle_url + '/all'
+export const api_vehicle_getOne = basic_vehicle_url + '/get'
 
 //staff
 export const api_staff_new = basic_staff_url + '/new'
@@ -47,3 +49,7 @@ export const api_task_delete = basic_task_url + '/delete'
 //user
 export const api_user_getOne = basic_user_url + '/get'
 export const api_user_update = basic_user_url + '/update'
+
+//job
+export const api_job_getOne = basic_job_url + '/get'
+export const api_job_all = basic_job_url + '/all'

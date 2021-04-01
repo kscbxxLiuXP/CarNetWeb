@@ -6,6 +6,7 @@ import { TaskForm } from "./TaskForm";
 import moment from 'moment';
 import { staffGetAll } from "../../utils/apis/api_staff";
 import { taskDelete, taskGetAll, taskUpdate } from "../../utils/apis/api_task";
+import { jobGetAll } from "../../utils/apis/api_job";
 const { confirm } = Modal
 
 const count = 3;
@@ -29,7 +30,8 @@ class Task extends React.Component {
             list: [],
             visible: false,
             data: {},
-            staffList: []
+            staffList: [],
+            jobList: [],
         }
 
     }
@@ -37,11 +39,13 @@ class Task extends React.Component {
 
     componentDidMount() {
         staffGetAll().then(e => {
-            this.setState({ staffList: e }, () => {
-                this.getData()
+            jobGetAll().then(a => {
+                this.setState({ staffList: e, jobList: a }, () => {
+                    this.getData()
+                })
             })
-        })
 
+        })
     }
 
     getData() {
@@ -76,18 +80,66 @@ class Task extends React.Component {
             this.getData()
         })
     };
-    renderStatus(state) {
-        //状态
-        // 1-等待执行
-        // 2-执行中
-        // 3-执行完成
-        if (state === 1) {
-            return <Badge status="warning" text="等待执行" />
-        } else if (state === 2) {
-            return <Badge status="processing" text="执行中" />
-        } else if (state === 3) {
-            return <Badge status="success" text="执行完成" />
+    getJob(taskID) {
+        var job;
+        if (this.state.jobList.length !== 0) {
+            this.state.jobList.forEach(i => {
+                if (parseInt(i.id) === parseInt(taskID))
+                    job = i
+            })
         }
+        return job
+    }
+    renderStatus(taskID) {
+        var job = this.getJob(taskID)
+        //状态
+        // 1、任务创建
+        // 2、任务接单
+        // 3、任务开始执行
+        // 4、任务执行结束
+        if (job) {
+            const state = job.step
+            if (state === 1) {
+                return <Badge status="warning" text="等待接单" />
+            } else if (state === 2) {
+                return <Badge status="warning" text="等待执行" />
+            } else if (state === 3) {
+                return <Badge status="processing" text="执行中" />
+            } else if (state === 4) {
+                return <Badge status="success" text="任务完成" />
+            }
+        }
+
+    }
+    renderProcess(taskID) {
+        var job = this.getJob(taskID)
+        if (job) {
+            const state = job.step
+            if (state === 1) {
+                return 0
+            } else if (state === 2) {
+                return 20
+            } else if (state === 3) {
+                return 80
+            } else if (state === 4) {
+                return 100
+            }
+        }
+    }
+    renderMaster(taskID) {
+        var job = this.getJob(taskID)
+        var name = ""
+        if (job.step <=1) {//未接单
+            name="暂未接单"
+        }else {
+            this.state.staffList.forEach(i => {
+                if (i.id === job.staffID) {
+                    name = i.name
+                }
+            })
+        }
+
+        return name
     }
     render() {
         const { loading, list } = this.state;
@@ -194,17 +246,13 @@ class Task extends React.Component {
                                         title={<a href={"#/home/task/manage/" + item.id}>{item.name}</a>}
                                         description={item.description}
                                     />
-                                    <ListItem title={""} context={this.renderStatus(item.state)} />
+                                    <ListItem title={""} context={this.renderStatus(item.id)} />
                                     <ListItem title={"负责人"} context={
-                                        this.state.staffList.map(i => {
-                                            if (i.id === item.masterID) {
-                                                return i.name
-                                            }
-                                        })
+                                        this.renderMaster(item.id)
                                     } />
                                     <ListItem title={"开始时间"} context={item.startTime} />
                                     <div style={{ width: 200 }}>
-                                        <Progress percent={item.process} status="active" />
+                                        <Progress percent={this.renderProcess(item.id)} status="active" />
                                     </div>
 
 
@@ -221,7 +269,7 @@ class Task extends React.Component {
                     onCancel={() => {
                         this.setState({ visible: false })
                     }}
-                    staffList={this.state.staffList}
+
                 />
                 <BackTop visibilityHeight={100} style={{ right: 50 }} />
             </div>

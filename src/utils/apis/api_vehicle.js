@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { api_vehicle_all, api_vehicle_new } from './api';
+import { api_vehicle_all, api_vehicle_getOne, api_vehicle_new } from './api';
 import Qs from 'qs'
 import moment from 'moment';
 export async function vehicleRegisterInGroup(vehicleList) {
@@ -29,6 +29,19 @@ export async function vehicleAll() {
         {
             url: api_vehicle_all,
             method: "get"
+        }
+    )
+    return res.data.data.vehicle
+}
+
+export async function vehicleGetOne(id) {
+    const res = await axios(
+        {
+            url: api_vehicle_getOne,
+            method: "get",
+            params: {
+                id: id
+            }
         }
     )
     return res.data.data.vehicle

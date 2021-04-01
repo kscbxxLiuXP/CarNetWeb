@@ -1,13 +1,8 @@
 import React, { createRef } from "react";
 import { PageHeader, Card, Form, Input, Button,Modal,DatePicker, message, Select } from 'antd'
 import { taskGetNextID, taskNew } from "../../../utils/apis/api_task";
-import { staffGetAll, staffGetByID } from "../../../utils/apis/api_staff";
-import { EnvironmentOutlined, ExclamationCircleOutlined } from "@ant-design/icons"
+import { EnvironmentOutlined,  } from "@ant-design/icons"
 import Map from "../../../components/Map";
-
-const { confirm } = Modal;
-
-const { Option } = Select;
 const { TextArea } = Input;
 const layout = {
     labelCol: {
@@ -28,7 +23,6 @@ class NewTask extends React.Component {
         super(props);
         this.formRef = createRef()
         this.state = {
-            staffList: [],
             addressNode: {
 
             },
@@ -40,12 +34,6 @@ class NewTask extends React.Component {
 
     componentDidMount() {
         this.getID()
-
-        staffGetAll().then(
-            e => {
-                this.setState({ staffList: e })
-            }
-        )
     }
     getID() {
         taskGetNextID().then(e => {
@@ -144,32 +132,7 @@ class NewTask extends React.Component {
                         >
                             <TextArea placeholder="任务描述" showCount maxLength={50} allowClear />
                         </Form.Item>
-                        <Form.Item
-                            name="masterID"
-                            label="负责人"
-                            rules={
-                                [
-                                    { required: true, message: "请输入任务负责人" }
-                                ]
-                            }
-                        >
-                            <Select
-                                showSearch
-                                style={{ width: 200 }}
-                                placeholder="选择任务执行员工"
-                                optionFilterProp="children"
-                                onChange={this.onChange}
-                                onSearch={this.onSearch}
-                                filterOption={(input, option) =>
-                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                }
-                            >
-                                {this.state.staffList.map((item, index) => {
-                                    return <Option key={index} value={item.id}>{item.name}</Option>
-                                })}
-
-                            </Select>
-                        </Form.Item>
+               
                         <Form.Item
                             name="startTime"
                             label="开始时间"

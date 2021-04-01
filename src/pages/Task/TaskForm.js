@@ -2,9 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Select, DatePicker, Button } from 'antd';
 import Map from '../../components/Map';
-import { EnvironmentOutlined, ExclamationCircleOutlined } from "@ant-design/icons"
+import { EnvironmentOutlined } from "@ant-design/icons"
 
-const { Option } = Select
 const { TextArea } = Input;
 
 
@@ -16,17 +15,9 @@ const layout = {
         span: 20,
     },
 };
-function onChange(value) {
-    console.log(`selected ${value}`);
 
-}
-
-
-function onSearch(val) {
-    console.log('search:', val);
-}
 //使用组件方式创建form
-export const TaskForm = ({ visible, onCreate, initialValues, onCancel, staffList }) => {
+export const TaskForm = ({ visible, onCreate, initialValues, onCancel }) => {
     const [form] = Form.useForm();
     form.setFieldsValue(initialValues)
 
@@ -111,31 +102,6 @@ export const TaskForm = ({ visible, onCreate, initialValues, onCancel, staffList
                     }
                 >
                     <TextArea placeholder="任务描述" showCount maxLength={50} allowClear />
-                </Form.Item>
-                <Form.Item
-                    name="masterID"
-                    label="负责人"
-                    rules={
-                        [
-                            { required: true, message: "请输入任务负责人" }
-                        ]
-                    }
-                >
-                    <Select
-                        showSearch
-                        style={{ width: 200 }}
-                        placeholder="Select a person"
-                        optionFilterProp="children"
-                        onChange={onChange}
-                        onSearch={onSearch}
-                        filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                    >
-                        {staffList.map((item, index) => {
-                            return <Option key={index} value={item.id}>{item.name}</Option>
-                        })}
-                    </Select>
                 </Form.Item>
                 <Form.Item
                     name="startTime"
