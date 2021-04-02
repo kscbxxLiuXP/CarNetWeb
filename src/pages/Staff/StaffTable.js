@@ -1,16 +1,27 @@
 import React from 'react'
-import { Table, Button, message, Modal, Spin } from 'antd';
+import { Table, Button, message, Modal, Spin, Badge, Tag, Tooltip } from 'antd';
 import { StaffForm } from './StaffForm';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { AuthModal } from './AuthModal';
 import { staffDelete, staffDeleteMany, staffUpdate } from '../../utils/apis/api_staff';
 import { LoadingOutlined } from '@ant-design/icons';
 import { vehicleAll } from '../../utils/apis/api_vehicle';
+import { withRouter } from 'react-router';
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const { confirm } = Modal
 const key = "message key"
 class StaffTable extends React.Component {
+    renderAccountState(state) {
+        switch (state) {
+            case 1:
+                return <Tag color="green">正常</Tag>
+                break;
+            case 2:
+                return <Tooltip title="首次登录后将会自动激活"><Tag color="orange">未激活</Tag></Tooltip>
+                break;
+        }
+    }
     constructor(props) {
         super(props);
         this.columns = [
@@ -36,14 +47,23 @@ class StaffTable extends React.Component {
                 dataIndex: 'gender',
             },
             {
+                title: '账号状态',
+                dataIndex: 'state',
+                render: r => this.renderAccountState(r)
+            },
+            {
                 title: "操作",
                 dataIndex: "操作",
+                width: 300,
                 render: (text, record) => (
                     <>
-                        <Button onClick={() => {
+                        <Button size="small" icon={<EyeOutlined />} onClick={() => {
+                            this.props.history.push('/home/staff/manage/' + record.id)
+                        }}>查看</Button>
+                        <Button size="small" style={{ marginLeft: 10 }} icon={<EditOutlined />} onClick={() => {
                             this.setState({ data: record, visible: true })
                         }}>编辑</Button>
-                        <Button onClick={() => {
+                        <Button size="small" style={{ marginLeft: 10 }} icon={<DeleteOutlined />} danger onClick={() => {
                             let _this = this
                             confirm({
                                 title: '你确定要删除这个员工吗?',
@@ -191,7 +211,6 @@ class StaffTable extends React.Component {
                     visible={this.state.authVisible}
                     onCreate={() => {
                         this.setState({ authVisible: false, selectedRowKeys: [], selectedRows: [], selectedData: { ids: [], names: [] } })
-                        message.success("授权成功！")
                     }}
                     data={this.state.selectedData}
 
@@ -207,4 +226,4 @@ class StaffTable extends React.Component {
         )
     }
 }
-export default StaffTable
+export default withRouter(StaffTable)

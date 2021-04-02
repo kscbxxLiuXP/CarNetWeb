@@ -9,6 +9,7 @@ export const basic_staff_url = basic_url + '/staff'
 export const basic_task_url = basic_url + '/task'
 export const basic_user_url = basic_url + '/user'
 export const basic_job_url = basic_url + '/job'
+export const basic_permission_url = basic_url + '/permission'
 
 //address
 export const api_address_getOne = basic_address_url + '/get'
@@ -37,6 +38,7 @@ export const api_staff_upload_photo = basic_staff_url + '/uploadPhoto'
 export const api_staff_filter_by_condition = basic_staff_url + '/filterByCondition'
 export const api_staff_update = basic_staff_url + '/update'
 export const api_staff_delete = basic_staff_url + '/delete'
+export const api_staff_avatar = basic_staff_url + '/avatar'
 
 //task
 export const api_task_get_next_id = basic_task_url + '/getNextID'
@@ -53,3 +55,9 @@ export const api_user_update = basic_user_url + '/update'
 //job
 export const api_job_getOne = basic_job_url + '/get'
 export const api_job_all = basic_job_url + '/all'
+
+//permission
+export const api_permission_new = basic_permission_url + '/new'
+export const api_permission_get_by_staffID = basic_permission_url + '/getByStaffID'
+export const api_permission_get_by_vehicleID = basic_permission_url + '/getByVehicleID'
+export const api_permission_delete = basic_permission_url + '/delete'

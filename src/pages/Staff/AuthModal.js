@@ -1,14 +1,15 @@
-import React, { useState,useEffect} from 'react';
-import { Modal, Select, Tag, Table, Button } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Modal, Select, Tag, Table, Button, message } from 'antd';
 import { addressGetAll } from '../../utils/apis/api_address';
+import { permissionGiveInGroup } from '../../utils/apis/api_permission';
 
-
+const key = '1'
 export const AuthModal = ({ visible, onCreate, data, onCancel, vehicleList }) => {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [addresses, setAddresses] = useState([]);
     const onSelectChange = (selectedRowKeys, selectedRows) => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
+        // console.log('selectedRowKeys changed: ', selectedRowKeys);
         setSelectedRowKeys(selectedRowKeys);
         setSelectedRows(selectedRows)
     };
@@ -18,6 +19,11 @@ export const AuthModal = ({ visible, onCreate, data, onCancel, vehicleList }) =>
         })
 
     }, []);
+    useEffect(() => {
+        setSelectedRowKeys([])
+        setSelectedRows([])
+
+    }, [visible])
     const columns = [
         {
             title: '车辆名称',
@@ -54,12 +60,24 @@ export const AuthModal = ({ visible, onCreate, data, onCancel, vehicleList }) =>
             onCancel={onCancel}
             destroyOnClose
             onOk={() => {
-                selectedRows.forEach(i => {
-                    i.authIndex = 10001
+                message.loading({ content: "正在授权中...", key: key, duration: 1 })
+                var l = []
+                data.ids.forEach(i => {
+                    selectedRows.forEach(e => {
+                        var t = {
+                            staffID: i,
+                            vehicleID: e.id
+                        }
+                        l.push(t)
+                    })
                 })
-                onCreate([...selectedRows])
+                permissionGiveInGroup(l).then(e => {
+                    message.success({ content: "授权成功！", key: key, duration: 1 })
+                    onCreate()
+                })
 
-                
+
+
             }}
         >
             将要给以下人员授权：

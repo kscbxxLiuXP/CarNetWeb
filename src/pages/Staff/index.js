@@ -5,6 +5,7 @@ import { MyIcon } from '../../components/MyIcon/index'
 import VehicleCard from "../../components/VehicleCard";
 import StaffTable from './StaffTable';
 import { staffFilterByCondtion } from '../../utils/apis/api_staff';
+import { withRouter } from 'react-router';
 const { Option } = Select
 class Staff extends React.Component {
     constructor(props) {
@@ -96,4 +97,4 @@ class Staff extends React.Component {
     }
 }
 
-export default Staff;
+export default withRouter(Staff);
