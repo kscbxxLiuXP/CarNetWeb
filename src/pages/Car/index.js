@@ -3,101 +3,72 @@ import { List, Card, PageHeader, Spin, Divider, Select, Input, BackTop } from 'a
 import TagFilter from "../../components/Filter/TagFilter";
 import { MyIcon } from '../../components/MyIcon/index'
 import VehicleCard from "../../components/VehicleCard";
+import { addressGetAll } from "../../utils/apis/api_address";
+import { staffGetAll } from "../../utils/apis/api_staff";
+import { vehicleFilterByCondtion } from "../../utils/apis/api_vehicle";
 
 
-const {Option} =Select
+const { Option } = Select
 class Car extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            spinning: false
+            loading: false,
+            addressList: [],
+            vehicleList: [],
+            staffList: [],
+            stateFilter: "",
+            nameFilter: "",
+            addressFilter: "",
         }
-        //模拟地址
-        this.addresses = [
-            {
-                id: 1,
-                address: "辽宁省沈阳市浑南区东北大学",
-                label: "辽宁沈阳浑南",
-            },
-            {
-                id: 2,
-                address: "辽宁省沈阳市南湖东北大学",
-                label: "辽宁沈阳南湖",
-            },
-            {
-                id: 3,
-                address: "河北省秦皇帝市经济开发区东北大学秦皇岛分校",
-                label: "河北秦皇岛"
-            }
-        ]
+    }
+    getData() {
+        this.setState({ loading: true })
+        vehicleFilterByCondtion(this.state.addressFilter, this.state.nameFilter, this.state.stateFilter).then(e => {
+            this.setState({ vehicleList: e, loading: false })
+        })
 
     }
-
-    data = [
-        {
-            id: '123001',
-            name: '车辆1',
-            sign: '苏A 54KLS',
-            address: "辽宁沈阳浑南",
-            state: 1,
-        },
-        {
-            id: '123002',
-            name: '车辆2',
-            sign: '苏A 65ECC',
-            address: "辽宁沈阳浑南",
-            state: 1,
-        },
-        {
-            id: '123003',
-            name: '车辆3',
-            sign: '辽A 3DMAX',
-            address: "辽宁沈阳浑南",
-            state: 2,
-        },
-        {
-            id: '123004',
-            name: '车辆4',
-            sign: '辽A IDEA1',
-            address: "辽宁沈阳浑南",
-            state: 1,
-        },
-        {
-            id: '123005',
-            name: '车辆5',
-            sign: '辽A IDEA1',
-            address: "辽宁沈阳浑南",
-            state: 2,
-        },
-        {
-            id: '123006',
-            name: '车辆6',
-            sign: '辽A IDEA1',
-            address: "辽宁沈阳浑南",
-            state: 1,
-        },
-    ];
-
+    componentDidMount() {
+        addressGetAll().then(e => {
+            this.setState({ addressList: e })
+        })
+        staffGetAll().then(e => {
+            this.setState({ staffList: e })
+        })
+        this.getData()
+    }
     onTagFilterChange = tags => {
-        this.setState({ spinning: true })
-        setTimeout(() => { this.setState({ spinning: false }) }, 300)
+        console.log(tags);
+        var filter = ""
+        if (tags.length === 2) {
+            filter = ""
+        } else if (tags.length === 1) {
+            switch (tags[0]) {
+                case '停止':
+                    filter = 2
+                    break;
+                case '作业中':
+                    filter = 1
+                    break;
+            }
+        } else {
+            filter = "-1"
+        }
+
+        this.setState({ stateFilter: filter }, () => { this.getData() })
     }
     handleAddressFilterChange = value => {
-        this.setState({ spinning: true })
-        setTimeout(() => { this.setState({ spinning: false }) }, 300)
-        // console.log(value)
+
+        this.setState({ addressFilter: value === undefined ? "" : value }, () => { this.getData() })
     }
     handleVechileSearch = value => {
-        this.setState({ spinning: true })
-        setTimeout(() => { this.setState({ spinning: false }) }, 300)
-        if (value === "")
-            console.log("empty input")
-        else
-            console.log(value)
-    }
-    render() {
+        this.setState({ nameFilter: value === undefined ? "" : value }, () => { this.getData() })
 
+    }
+
+    render() {
         return (
             <div>
                 <PageHeader
@@ -128,7 +99,7 @@ class Car extends React.Component {
                                 style={{ width: 200 }}
                                 onChange={this.handleAddressFilterChange}
                             >
-                                {this.addresses.map((adr, index) => {
+                                {this.state.addressList.map((adr, index) => {
                                     return <Option key={adr.id} value={adr.id}>{adr.label}</Option>
                                 })}
                             </Select>
@@ -137,15 +108,15 @@ class Car extends React.Component {
                     </Card>
 
                 </div>
-                <Divider dashed orientation="left"> 共 {2} 辆</Divider>
+                <Divider dashed orientation="left"> 共 {this.state.vehicleList.length} 辆</Divider>
                 <div>
-                    <Spin spinning={this.state.spinning}>
+                    <Spin spinning={this.state.loading}>
                         <List
-                            grid={{ gutter: 16, column: 5 }}
-                            dataSource={this.data}
+                            grid={{ gutter: 32, column: 4 }}
+                            dataSource={this.state.vehicleList}
                             renderItem={item => (
-                                <List.Item onClick={() => {this.props.history.push("/home/car/manage/"+item.id)}}>
-                                    <VehicleCard item={item}></VehicleCard>
+                                <List.Item >
+                                    <VehicleCard staffList={this.state.staffList} addressList={this.state.addressList} item={item}></VehicleCard>
                                 </List.Item>
                             )}
                         />

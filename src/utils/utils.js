@@ -19,6 +19,15 @@ export function formatFileSize(fileSize) {
         return temp + 'GB';
     }
 }
-export function timeFormat(timeString){
+export function timeFormat(timeString) {
     return moment(timeString).format("YYYY-MM-DD HH:MM:SS")
+}
+
+export function timeMinus(t) {
+    var now = moment();
+    var time = moment(t);
+
+    var dura = moment.duration(now - time)
+    var str = dura.days() + "天" + dura.hours() + '小时' + dura.minutes() + '分' + dura.seconds() + '秒'
+    return str
 }

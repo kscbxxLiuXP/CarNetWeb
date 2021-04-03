@@ -1,51 +1,23 @@
 import React from 'react';
 import { Button, Table, Modal, message } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { permissionDelete, permissionGetByVehicle, permissionGiveInGroup } from '../../../../utils/apis/api_permission';
 const { confirm } = Modal
 const columns = [
     {
-        title: 'Name',
+        title: '姓名',
         dataIndex: 'name',
-        render: (text) => <a>{text}</a>,
     },
 
     {
-        title: 'id',
+        title: '工号',
         dataIndex: 'id',
     }, {
-        title: 'Age',
+        title: '年龄',
         dataIndex: 'age',
     },
 ];
-const data = [
-    {
-        key: 1005,
-        name: 'John Brown',
-        id: 1005,
-        age: 32,
-
-    },
-    {
-        key: 1006,
-        name: 'Jim Green',
-        id: 1006,
-        age: 42,
-
-    },
-    {
-        key: 1003,
-        name: 'Joe Black',
-        id: 1003,
-        age: 32,
-
-    },
-    {
-        key: 1004,
-        name: 'Disabled User',
-        id: 1004,
-        age: 99,
-    },
-];
+const key = "1"
 class CarPermission extends React.Component {
     constructor(props) {
         super(props);
@@ -53,10 +25,19 @@ class CarPermission extends React.Component {
             {
                 title: "员工工号",
                 dataIndex: "id",
+                render: (t, r) => r.staffID
             },
             {
                 title: "员工姓名",
                 dataIndex: "name",
+                render: (t, r) => <div>{
+                    this.props.staffList.map(i => {
+                        if (i.id === r.staffID) {
+
+                            return i.name
+                        }
+                    })
+                }</div>
 
             },
             {
@@ -66,22 +47,20 @@ class CarPermission extends React.Component {
             }
         ],
             this.state = {
-                dataSource: [
-                    {
-                        key: 1001,
-                        id: 1001,
-                        name: "张三"
-                    },
-                    {
-                        key: 1002,
-                        id: 1002,
-                        name: "张三1"
-                    }
-                ],
                 visible: false,
                 selectedRows: [],
                 selectedRowKeys: [],
+                permissionList: []
             }
+    }
+    componentDidMount() {
+        this.getData()
+    }
+    getData() {
+        var id = this.props.id
+        permissionGetByVehicle(id).then(e => {
+            this.setState({ permissionList: e })
+        })
     }
     handlePermissionDelete = (record) => {
         let _this = this;
@@ -93,26 +72,35 @@ class CarPermission extends React.Component {
             okType: 'danger',
             cancelText: '取消',
             onOk() {
-                console.log('OK');
-                const dataSource = [..._this.state.dataSource];
-                _this.setState({
-                    dataSource: dataSource.filter((item) => item.key !== record.key),
-                });
-                message.success("删除成功！")
+                var _this = this
+                message.loading({ content: "正在删除中...", key: key, duration: 1 })
+                permissionDelete(record.id).then(e => {
+                    message.success({ content: "授删除成功！", key: key, duration: 1 })
+                    _this.getData()
+                })
 
             },
         });
     }
     handlePermissionAdd = () => {
-        this.setState({ visible: false })
-        const { dataSource, selectedRows } = this.state;
+        message.loading({ content: "正在授权中...", key: key, duration: 1 })
 
-        this.setState({
-            dataSource: [...dataSource, ...selectedRows],
-            selectedRows: [],
-            selectedRowKeys: [],
-        }, () => { console.log(this.state.dataSource) });
-        message.success("添加成功！", 1.5);
+        const { selectedRows } = this.state;
+        var l = []
+
+        selectedRows.forEach(e => {
+            var t = {
+                staffID: e.id,
+                vehicleID: this.props.id
+            }
+            l.push(t)
+        })
+        permissionGiveInGroup(l).then(e => {
+            message.success({ content: "授权成功！", key: key, duration: 1 })
+            this.setState({ visible: false })
+            this.getData()
+
+        })
     }
 
     rowSelection = {
@@ -120,7 +108,6 @@ class CarPermission extends React.Component {
             this.setState({ selectedRows })
         },
         getCheckboxProps: (record) => ({
-
             // Column configuration not to be checked
             name: record.name,
         }),
@@ -139,7 +126,7 @@ class CarPermission extends React.Component {
             <div>
                 <Button style={{ marginBottom: 10 }} onClick={() => this.setState({ visible: true })}>添加员工权限</Button>
 
-                <Table columns={this.columns} dataSource={this.state.dataSource} />
+                <Table columns={this.columns} dataSource={this.state.permissionList} />
                 <Modal
                     visible={this.state.visible}
                     okText="确认"
@@ -154,7 +141,7 @@ class CarPermission extends React.Component {
                     <Table
                         rowSelection={rowSelection}
                         columns={columns}
-                        dataSource={data}
+                        dataSource={this.props.staffList}
                     />
                 </Modal>
             </div>

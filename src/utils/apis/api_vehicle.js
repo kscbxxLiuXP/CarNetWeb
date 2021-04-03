@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { api_vehicle_all, api_vehicle_getOne, api_vehicle_new } from './api';
+import { api_vehicle_all, api_vehicle_delete, api_vehicle_filter_by_condition, api_vehicle_getOne, api_vehicle_new ,api_vehicle_update} from './api';
 import Qs from 'qs'
 import moment from 'moment';
 export async function vehicleRegisterInGroup(vehicleList) {
@@ -44,5 +44,35 @@ export async function vehicleGetOne(id) {
             }
         }
     )
+    return res.data.data.vehicle
+}
+export async function vehicleFilterByCondtion(address, name, state) {
+    const res = await axios({
+        url: api_vehicle_filter_by_condition,
+        method: "get",
+        params: {
+            address: address,
+            name: name,
+            state: state
+        }
+    })
+    return res.data.data.vehicle
+}
+export async function vehicleDelete(vehicleID) {
+    const res = await axios({
+        url: api_vehicle_delete,
+        method: "get",
+        params: {
+            id: vehicleID
+        }
+    })
+    return res.data.data.vehicle
+}
+export async function vehicleUpdate(vehicle){
+    const res = await axios({
+        url:api_vehicle_update,
+        method:"put",
+        data:vehicle
+    })
     return res.data.data.vehicle
 }

@@ -24,8 +24,11 @@ export const api_setting_update = basic_setting_url + '/update'
 
 //vehicle
 export const api_vehicle_new = basic_vehicle_url + '/new'
+export const api_vehicle_delete = basic_vehicle_url + '/delete'
 export const api_vehicle_all = basic_vehicle_url + '/all'
 export const api_vehicle_getOne = basic_vehicle_url + '/get'
+export const api_vehicle_update = basic_vehicle_url + '/update'
+export const api_vehicle_filter_by_condition = basic_vehicle_url + '/filterByCondition'
 
 //staff
 export const api_staff_new = basic_staff_url + '/new'
@@ -55,6 +58,9 @@ export const api_user_update = basic_user_url + '/update'
 //job
 export const api_job_getOne = basic_job_url + '/get'
 export const api_job_all = basic_job_url + '/all'
+export const api_job_current_Job_By_VehicleID = basic_job_url + '/currentJobByVehicleID'
+export const api_job_last_Job_By_VehicleID = basic_job_url + '/lastJobByVehicleID'
+
 
 //permission
 export const api_permission_new = basic_permission_url + '/new'

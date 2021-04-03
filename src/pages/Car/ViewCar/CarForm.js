@@ -10,29 +10,10 @@ const layout = {
 };
 
 
-const addresses = [
-    {
-        id: 1,
-        key: '1',
-        address: "辽宁省沈阳市浑南区东北大学",
-        label: "辽宁沈阳浑南",
-    },
-    {
-        id: 2,
-        key: '2',
-        address: "辽宁省沈阳市南湖东北大学",
-        label: "辽宁沈阳南湖",
-    },
-    {
-        id: 3,
-        key: '3',
-        address: "河北省秦皇帝市经济开发区东北大学秦皇岛分校",
-        label: "河北秦皇岛"
-    }
-];
+
 
 //使用组件方式创建form
-export const CarForm = ({ visible, onCreate, initialValues, onCancel }) => {
+export const CarForm = ({ visible, onCreate, initialValues, onCancel, addressList }) => {
     const [form] = Form.useForm();
     form.setFieldsValue(initialValues)
     return (
@@ -49,7 +30,14 @@ export const CarForm = ({ visible, onCreate, initialValues, onCancel }) => {
                     .validateFields()
                     .then((values) => {
                         form.resetFields();
-                        onCreate(values);
+                        var v = values
+                        v.identification = initialValues.identification
+                        v.registerTime = initialValues.registerTime
+                        v.activationTime = initialValues.activationTime
+                        v.state = initialValues.state
+                        v.taskExecuteNum = initialValues.taskExecuteNum
+                        v.workState = initialValues.workState
+                        onCreate(v)
                     })
                     .catch((info) => {
                         console.log('Validate Failed:', info);
@@ -70,7 +58,7 @@ export const CarForm = ({ visible, onCreate, initialValues, onCancel }) => {
                         {
                             required: true,
                             message: "请输入车辆名称！",
-                        }, 
+                        },
                     ]}
                 >
                     <Input allowClear />
@@ -84,7 +72,7 @@ export const CarForm = ({ visible, onCreate, initialValues, onCancel }) => {
                             required: true,
                             message: "请输入车辆标识！",
                         }
-                       
+
                     ]}
                 >
                     <Input disabled allowClear />
@@ -104,7 +92,7 @@ export const CarForm = ({ visible, onCreate, initialValues, onCancel }) => {
                 </Form.Item>
                 <Form.Item
                     // name="vehicleAddress"
-                    name="address"
+                    name="addressID"
                     label="车辆地址："
                     rules={[
                         {
@@ -118,7 +106,7 @@ export const CarForm = ({ visible, onCreate, initialValues, onCancel }) => {
                         placeholder="车辆地址"
                         allowClear
                     >
-                        {addresses.map((adr, index) => {
+                        {addressList.map((adr, index) => {
                             return <Option key={index} value={index}>{adr.label}</Option>
                         })}
                     </Select>

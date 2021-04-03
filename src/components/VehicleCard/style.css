@@ -1,0 +1,11 @@
+.vehicle-card-wrapper{
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    background-color: white;
+}
+.vehicle-card-content{
+    margin-left: 20px;
+
+ 
+}
