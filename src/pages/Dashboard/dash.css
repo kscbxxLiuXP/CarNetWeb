@@ -1,3 +1,215 @@
-.a-label{
-    color:black
+.a-label {
+    color: black
+}
+
+.dashcard-waiting-task {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px 15px;
+    position: relative;
+}
+
+.dashcard-waiting-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+}
+
+.dashcard-waiting-task-title {
+    font-weight: bold;
+}
+
+.dashcard-waiting-task-status {
+    background-color: #e6e7ea;
+    color: gray;
+    border-radius: 10px;
+    font-size: 12px;
+    padding: 0px 10px;
+    font-weight: bold;
+}
+
+.dashcard-waiting-task-description {
+    color: #7d808d;
+    margin-top: 10px;
+}
+
+.dashcard-waiting-task-address {
+    margin-top: 10px;
+}
+
+.dashcard-waiting-task-time {
+    margin-top: 5px;
+}
+
+.dashcard-waiting-task-button {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 15px;
+    padding: 0px 15px;
+    color: black;
+    transition: all 300ms;
+
+}
+
+.dashcard-waiting-task-button:hover {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 15px;
+    background-color: black;
+    color: white;
+    padding: 0px 15px;
+    cursor: pointer;
+
+}
+
+
+.dashcard-running-task {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px 15px;
+    position: relative;
+}
+
+.dashcard-running-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+}
+
+.dashcard-running-task-title {
+    font-weight: bold;
+}
+
+.dashcard-running-task-status {
+    background-color: #fcf1df;
+    color: #f1b48a;
+    border-radius: 10px;
+    font-size: 12px;
+    padding: 0px 10px;
+    font-weight: bold;
+}
+
+.dashcard-running-task-description {
+    color: #7d808d;
+    margin-top: 10px;
+}
+
+.dashcard-running-task-address {
+    margin-top: 10px;
+}
+
+.dashcard-running-task-time {
+    margin-top: 5px;
+}
+
+.dashcard-running-task-button {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 15px;
+    padding: 0px 15px;
+    color: black;
+    transition: all 300ms;
+
+}
+
+.dashcard-running-task-button:hover {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 15px;
+    background-color: black;
+    color: white;
+    padding: 0px 15px;
+    cursor: pointer;
+
+}
+
+
+.dashcard-running-vehicle {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px 15px;
+    position: relative;
+}
+
+.dashcard-running-vehicle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+}
+
+.dashcard-running-vehicle-title {
+    
+}
+
+.dashcard-running-vehicle-status {
+    background-color: #daf4eb;
+    color: #39c8b8;
+    border-radius: 10px;
+    font-size: 12px;
+    padding: 0px 10px;
+    font-weight: bold;
+}
+
+.dashcard-running-vehicle-description {
+    color: #7d808d;
+    margin-top: 10px;
+}
+
+.dashcard-running-vehicle-address {
+    margin-top: 10px;
+}
+
+.dashcard-running-vehicle-time {
+    margin-top: 5px;
+}
+
+.dashcard-running-vehicle-button {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 15px;
+    padding: 0px 15px;
+    color: black;
+    transition: all 300ms;
+
+}
+
+.dashcard-running-vehicle-button:hover {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 15px;
+    background-color: black;
+    color: white;
+    padding: 0px 15px;
+    cursor: pointer;
+
 }

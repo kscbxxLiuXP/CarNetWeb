@@ -13,6 +13,7 @@ import { timeFormat, timeMinus } from "../../../utils/utils";
 import { jobGetAll, jobGetCurrentJobByVehicleID } from "../../../utils/apis/api_job";
 import { taskGetAll } from "../../../utils/apis/api_task";
 import { staffGetAll } from "../../../utils/apis/api_staff";
+import ContinueTime from "../../../components/ContinueTime";
 const { confirm } = Modal;
 const { TabPane } = Tabs;
 //用于表示message的key
@@ -34,10 +35,7 @@ class ViewCar extends React.Component {
     }
 
     componentDidMount() {
-        this.interval = setInterval(() => {
-            var a = timeMinus(this.state.currentJob.step3Time)
-            this.setState({ durationTime: a })
-        }, 1000);
+       
         this.getData(this.props.match.params.id)
         addressGetAll().then(e => {
             this.setState({ addressList: e })
@@ -65,6 +63,7 @@ class ViewCar extends React.Component {
             this.setState({
                 vehicle: e
             })
+           
         })
     }
 
@@ -130,7 +129,7 @@ class ViewCar extends React.Component {
             <div style={{ padding: " 0 5px", backgroundColor: "#36bbd8", color: 'white', borderRadius: 5, fontSize: 18 }}>{sign.substring(0, 1)}</div>
             <div style={{ marginLeft: 3, padding: 3, borderRadius: 5, fontSize: 18, }}>{sign.substring(1, 2)}</div>
             <div style={{ padding: 3, marginLeft: -3, borderRadius: 5, fontSize: 18, fontWeight: 'bold' }}>·</div>
-            <div style={{ padding: 3, marginLeft: -3, borderRadius: 5, fontSize: 18, }}>{sign.substring(3)}</div>
+            <div style={{ padding: 3, marginLeft: -3, borderRadius: 5, fontSize: 18, }}>{sign.substring(2)}</div>
         </div>
     }
     render() {
@@ -246,7 +245,8 @@ class ViewCar extends React.Component {
                                             作业已持续:
                                          </div>
                                         <div style={{ fontSize: 18 }}>
-                                            {this.state.durationTime}
+                                            <ContinueTime time={this.state.currentJob.step3Time} />
+
                                         </div>
                                     </div>}
                                 </Card>

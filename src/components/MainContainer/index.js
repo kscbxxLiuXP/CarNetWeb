@@ -35,12 +35,8 @@ class MainContainer extends React.Component {
                     }} width={200} className="site-layout-background">
                         <SiderBar />
                     </Sider>
-                    <Layout style={{ marginLeft: 200, padding: '16px' }}>
-                        {/* <Breadcrumb style={{ margin: '16px 0' }}>
-                            <Breadcrumb.Item>Home</Breadcrumb.Item>
-                            <Breadcrumb.Item>List</Breadcrumb.Item>
-                            <Breadcrumb.Item>App</Breadcrumb.Item>
-                        </Breadcrumb> */}
+                    <Layout style={{ marginLeft: 200, padding: '16px', backgroundColor: '#f8f8fb' }}>
+
                         <Content
                             className="site-layout-background"
                             style={{
@@ -51,7 +47,7 @@ class MainContainer extends React.Component {
                         >
                             {this.props.children}
                         </Content>
-                        <Footer style={{ textAlign: 'center' }}>工业车联网 ©2020 Created by NEU</Footer>
+                        <Footer style={{ textAlign: 'center', backgroundColor: '#f8f8fb' }}>工业车联网 ©2020 Created by NEU</Footer>
                     </Layout>
                 </Layout>
             </Layout>

@@ -52,7 +52,7 @@ class Task extends React.Component {
         this.setState({ loading: true })
         taskGetAll().then(e => {
             e.forEach(element => {
-                element.startTime = moment(element.startTime).format("YYYY-MM-DD HH:MM:SS")
+                element.startTime = moment(element.startTime).format("YYYY-MM-DD HH:mm:ss")
             });
             this.setState({
                 loading: false,

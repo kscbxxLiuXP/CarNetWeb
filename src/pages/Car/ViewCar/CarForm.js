@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Modal, Form, Input, Select } from 'antd';
+import { timeFormat } from '../../../utils/utils';
 
 const { Option } = Select
 //表单布局
@@ -32,11 +33,13 @@ export const CarForm = ({ visible, onCreate, initialValues, onCancel, addressLis
                         form.resetFields();
                         var v = values
                         v.identification = initialValues.identification
-                        v.registerTime = initialValues.registerTime
-                        v.activationTime = initialValues.activationTime
+                        v.registerTime = timeFormat(initialValues.registerTime)
+                        v.activationTime = timeFormat(initialValues.activationTime)
                         v.state = initialValues.state
                         v.taskExecuteNum = initialValues.taskExecuteNum
                         v.workState = initialValues.workState
+                        v.workStaffID = initialValues.workStaffID
+                      
                         onCreate(v)
                     })
                     .catch((info) => {

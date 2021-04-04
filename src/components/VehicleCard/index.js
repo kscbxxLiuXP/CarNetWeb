@@ -27,7 +27,7 @@ class VehicleCard extends React.Component {
         jobGetLastJobByVehicleID(this.props.item.id).then(e => {
             var time = "暂无记录"
             if (e.id !== -1) {
-                time = moment(e.step4Time).format("YYYY年MM月DD日 HH:MM:SS")
+                time = moment(e.step4Time).format("YYYY年MM月DD日 HH:mm:ss")
             }
             this.setState({ time: time })
         })
@@ -85,7 +85,7 @@ class VehicleCard extends React.Component {
             <div style={{ padding: " 0 5px", backgroundColor: "#36bbd8", color: 'white', borderRadius: 5, fontSize: 14 }}>{sign.substring(0, 1)}</div>
             <div style={{ marginLeft: 3, padding: 3, borderRadius: 5, fontSize: 14, }}>{sign.substring(1, 2)}</div>
             <div style={{ padding: 3, marginLeft: -3, borderRadius: 5, fontSize: 14, fontWeight: 'bold' }}>·</div>
-            <div style={{ padding: 3, marginLeft: -3, borderRadius: 5, fontSize: 14, }}>{sign.substring(3)}</div>
+            <div style={{ padding: 3, marginLeft: -3, borderRadius: 5, fontSize: 14, }}>{sign.substring(2)}</div>
         </div>
     }
     renderVehicleState(state) {

@@ -20,7 +20,7 @@ export function formatFileSize(fileSize) {
     }
 }
 export function timeFormat(timeString) {
-    return moment(timeString).format("YYYY-MM-DD HH:MM:SS")
+    return moment(timeString).format("YYYY-MM-DD HH:mm:ss")
 }
 
 export function timeMinus(t) {

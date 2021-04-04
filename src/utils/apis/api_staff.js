@@ -44,6 +44,7 @@ export async function staffRegisterInGroup(staffList) {
                     gender: item.gender,
                     photoed: 0,
                     workState: 2,
+                    taskNum: 0,
                     state: 2
                 })
             })
